@@ -1,14 +1,19 @@
 <html>
-	<head>
-		<script>
-			function sayHello()
-			{
-				alert('Hi!');
-			}
-		</script>
-	</head>
+	<title>Meal Planner</title>
 	<body>
 		<p> Hello World! </p>
-		<button onclick="javaScript:sayHello();">Click Me!</button>
+		<button id="clickMe">Click Me!</button>
+
+		<!-- Script includes -->
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.1.1.min.js"></script>
+		<script>
+			$(document).ready(function () {
+				$('#clickMe').click(function () {
+					alert('Hi!');
+				});
+
+			});
+		</script>
 	</body>
 </html>
