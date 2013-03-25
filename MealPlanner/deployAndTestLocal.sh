@@ -7,6 +7,6 @@ if [ ! -d "$DEPLOY_DIR" ]; then
 fi
 
 # Copy everything over.
-cp Ui/*.* "$DEPLOY_DIR"
+cp -rf Ui/* "$DEPLOY_DIR"
 
 open -a "Google Chrome" "http://localhost/~jduv/MealPlanner/index.html"
