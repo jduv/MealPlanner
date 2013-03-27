@@ -1,5 +1,5 @@
 // Require tested modules
-require('../Ui/js/mealplanner-1.0.js');
+require('../ui/js/mealplanner-0.0.1.js');
 var chai = require('chai');
 
 suite('Array', function(){
@@ -11,12 +11,10 @@ suite('Array', function(){
 });
 
 suite('test', function() {
-
 	var i = 0;
 	var g = {};
 
 	setup(function() {
-		console.log('in setup');
 	 	g = { a : 'test', b : i++ };
 	});
 
