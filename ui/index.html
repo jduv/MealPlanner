@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<head>
@@ -6,6 +7,8 @@
 	<body>
 		<p> Hello World! </p>
 		<button id="clickMe">Click Me!</button>
+
+		<div id="app"></div>
 
 		<!-- Script includes -->
 		<script src="js/jquery-1.9.1.min.js"></script>
@@ -19,6 +22,14 @@
 				$('#clickMe').click(function () {
 					alert('Hi!');
 				});
+
+				var app = $.sammy('#main', function() {
+					this.get('#/', function(context) {
+						context.log('Hello world'); 
+					});
+				});
+
+				app.run('#/');
 			});
 		</script>
 	</body>
