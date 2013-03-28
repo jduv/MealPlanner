@@ -23,12 +23,17 @@
 					alert('Hi!');
 				});
 
+				// Add main sammy route
 				var app = $.sammy('#main', function() {
 					this.get('#/', function(context) {
-						context.log('Hello world'); 
+						var data = { name : 'jduv' };
+						var user = ich.test(data);
+
+						$('#app').append()
 					});
 				});
 
+				// Run the application
 				app.run('#/');
 			});
 		</script>
