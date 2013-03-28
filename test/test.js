@@ -18,8 +18,6 @@ suite('test', function() {
 	 	g = { a : 'test', b : i++ };
 	});
 
-	console.log(g);
-
 	test('should work', function() {
 		chai.assert.strictEqual(g.a, 'test');
 		chai.assert.strictEqual(g.b, 0);
