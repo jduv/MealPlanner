@@ -18,24 +18,49 @@
 		<script src="js/angular-1.0.5.min.js"></script>
 		<script src="js/mealplanner-0.0.1.js"></script>
 		<script>
+			// Wire up everything.
 			$(document).ready(function () {
-				$('#clickMe').click(function () {
-					alert('Hi!');
+				$("#clickMe").click(function () {
+					alert("Hi!");
 				});
 
-				// Add main sammy route
-				var app = $.sammy('#main', function() {
-					this.get('#/', function(context) {
-						var data = { name : 'jduv' };
-						var user = ich.test(data);
+				loadTemplates(runApp);
+			});
 
-						$('#app').append()
+			// Loads templates.
+			function loadTemplates(success)
+			{
+				$.get("./tpl/templates.html")
+				 .done(function(data) {
+						// append templates to the end of the body tag
+						$("head").append(data);
+
+						// boot ICH, removes loaded templates from DOM once built.
+						ich.grabTemplates();
+						success();
+					})
+				 .fail(function() {
+				 	$("#app").append("Error loading templates!")
+				 });
+			}
+
+			// Runs the app. Call after templates are loaded.
+			function runApp()
+			{
+				// Add main sammy route
+				var app = $.sammy("#main", function() {
+					this.get("#/", function(context) {
+						var data = [{ name : "jduv" },  { name : "judy" }, { name : "griffin" }];
+						data.forEach(function(entry, idx) {
+							var user = ich.test(entry);
+							$("#app").append(user);
+						})
 					});
 				});
 
 				// Run the application
-				app.run('#/');
-			});
+				app.run("#/");
+			}
 		</script>
 	</body>
 </html>
