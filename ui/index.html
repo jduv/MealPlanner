@@ -1,29 +1,45 @@
 <!DOCTYPE html>
 <html>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<head>
 		<title>Meal Planner</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.3.1.css" />
 	</head>
 	<body>
-		<p> Hello World! </p>
-		<button id="clickMe">Click Me!</button>
-
-		<div id="app"></div>
+		<div data-role="page" data-theme="c" id="app">
+			<div data-role="header" data-theme="c"><i class="icon-food icon-2x"> Meal Planner</i></div>
+		</div>
 
 		<!-- Script includes -->
 		<script src="js/jquery-1.9.1.min.js"></script>
 		<script src="js/jquery-migrate-1.1.1.min.js"></script>
+		<script>
+			// Turn off JQuery mobile's routing. Sammy is more better.
+			// This must be placed before the script include.
+			$(document).bind("mobileinit", function () {
+				console.log("mobileInit");
+			    $.mobile.ajaxEnabled = false;
+			    $.mobile.linkBindingEnabled = false;
+			    $.mobile.hashListeningEnabled = false;
+			    $.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script src="js/jquery.mobile-1.3.1.min.js"></script>
 		<script src="js/icanhaz-0.10.2.min.js"></script>
 		<script src="js/sammy-0.7.4.min.js"></script>
 		<script src="js/angular-1.0.5.min.js"></script>
 		<script src="js/mealplanner-0.0.1.js"></script>
 		<script>
+
 			// Wire up everything.
 			$(document).ready(function () {
-				$("#clickMe").click(function () {
-					alert("Hi!");
-				});
-
+				$.mobile.ajaxEnabled = false;
+			    $.mobile.linkBindingEnabled = false;
+			    $.mobile.hashListeningEnabled = false;
+			    $.mobile.pushStateEnabled = false;
 				loadTemplates(runApp);
 			});
 
@@ -35,7 +51,7 @@
 						// append templates to the end of the body tag
 						$("head").append(data);
 
-						// boot ICH, removes loaded templates from DOM once built.
+						// re cboot ICH, removes loaded templates from DOM once built.
 						ich.grabTemplates();
 						success();
 					})
@@ -48,11 +64,11 @@
 			function runApp()
 			{
 				// Add main sammy route
-				var app = $.sammy("#main", function() {
+				var app = $.sammy("#app", function() {
 					this.get("#/", function(context) {
 						var data = [{ name : "jduv" },  { name : "judy" }, { name : "griffin" }];
 						data.forEach(function(entry, idx) {
-							var user = ich.test(entry);
+							var user = ich.ingredient(entry);
 							$("#app").append(user);
 						})
 					});
