@@ -27,10 +27,16 @@
      margin-right: auto;
 }
 
-.header-btn-container {
+.header-btn-container-right {
 	position: absolute;
 	top: 18%;
 	right: 1%;
+}
+
+.header-btn-container-left {
+	position: absolute;
+	top: 19%;
+	left: 1%;
 }
 
 .header-btn {
@@ -39,8 +45,13 @@
 	border: 1px solid #FFFFFF;
 }
 
-.header-btn:hover, .header-btn:focus {
+.header-btn:hover, 
+.header-btn:focus {
 	text-decoration: none;
+}
+
+#back-cancel-btn {
+	padding: 7px 10px;
 }
 
 .recipe-thumb {
@@ -61,12 +72,13 @@
 .recipe-form-content {
 	display: inline-block;
 	margin-left: 13px;
-	margin-top: 15px;
+	margin-top: 5px;
 	width: 50%
 }
 
 .sub-legend {
 	font-size: 18px;
+	margin-top: 5px;
 }
 
 .ingredients-list {

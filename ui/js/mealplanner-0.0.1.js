@@ -57,6 +57,7 @@ var mealPlannerApp = (function() {
 			this.get("#boot", function(context) {
 				$("#app").html(ich.recipes());
 				$("#nav-recipes").addClass("active");
+				$("#back-cancel-btn").hide();
 			});
 
 		     // set up routes.
@@ -65,19 +66,24 @@ var mealPlannerApp = (function() {
 		     	$("#nav-recipes").addClass("active");
 		     	$("#nav-planner").removeClass("active");
 		     	$("#add-recipe-btn").fadeIn("fast");
+		     	$("#back-cancel-btn").fadeOut("fast");	
 		     });
 
 		     this.get("#planner", function(context) {
 		     	context.app.swap(ich.planner());
 		     	$("#nav-planner").addClass("active");
 		     	$("#nav-recipes").removeClass("active");
-		     	$("#add-recipe-btn").fadeOut("fast");		     	
+		     	$("#add-recipe-btn").fadeOut("fast");
+		     	$("#back-cancel-btn").fadeOut("fast");		     	
 		     })
 
 		     this.get("#newRecipe", function(context) {
 		     	context.app.swap(ich.newRecipe());
 		     	$(".nav li").removeClass("active");
+
+		     	// check to see if the button is shown first.
 		     	$("#add-recipe-btn").fadeOut("fast");
+		     	$("#back-cancel-btn").fadeIn("fast");
 		     })
 		 });
 
