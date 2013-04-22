@@ -16,9 +16,10 @@
 		<!-- Header -->
 		<section class="header text-center">
 			<h2 class="header-text"><i class="icon-food"></i> My Meal Planner</h2>
-			<div class="header-btn-container-left"><a id="back-cancel-btn" class="btn header-btn" href="#recipes">
+			<!-- The display:none here is required to keep the btn hidden on boot. -->
+			<div class="btn-header-container-left"><a id="btn-back" class="btn btn-header" style="display:none" href="#">
 				<i class="icon-circle-arrow-left"> Back</i></a></div>
-			<div class="header-btn-container-right"><a id="add-recipe-btn" class="btn header-btn" href="#newRecipe">
+			<div class="btn-header-container-right"><a id="add-recipe-btn" class="btn btn-header" href="#">
 				<i class="icon-plus icon-2x"></i></a></div>
 		</section>
 
@@ -31,6 +32,7 @@
 			<div class="navbar-inner">
 				<ul class="nav">
 					<li id="nav-recipes"><a href="#recipes"><i class="icon-briefcase"></i> Recipe box</a></li>
+					<li id="nav-ingredients"><a href="#ingredients"><i class="icon-lemon"></i> Ingredients</a></li>
 					<li id="nav-planner"><a href="#planner"><i class="icon-calendar"></i> Daily planner</a></li>
 				</ul>
 			</div>

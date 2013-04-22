@@ -27,37 +27,50 @@
      margin-right: auto;
 }
 
-.header-btn-container-right {
+.btn-header-container-right {
 	position: absolute;
 	top: 18%;
 	right: 1%;
 }
 
-.header-btn-container-left {
+.btn-header-container-left {
 	position: absolute;
 	top: 19%;
 	left: 1%;
 }
 
-.header-btn {
+.btn-header {
 	color: #FFFFFF;
 	background: rgba(0,0,0,0);
 	border: 1px solid #FFFFFF;
 }
 
-.header-btn:hover, 
-.header-btn:focus {
+.btn-header:hover, 
+.btn-header:focus {
 	text-decoration: none;
 }
 
-#back-cancel-btn {
+#btn-back {
 	padding: 7px 10px;
+}
+
+.btn-submit-recipe {
+	border: 1px solid #b3b3b3;
+	color: #ffffff;
+	background: #a90329; /* Old browsers */
+	background: -moz-linear-gradient(top,  #a90329 0%, #8f0222 44%, #6d0019 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a90329), color-stop(44%,#8f0222), color-stop(100%,#6d0019)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #a90329 0%,#8f0222 44%,#6d0019 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #a90329 0%,#8f0222 44%,#6d0019 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #a90329 0%,#8f0222 44%,#6d0019 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #a90329 0%,#8f0222 44%,#6d0019 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a90329', endColorstr='#6d0019',GradientType=0 ); /* IE6-9 */
 }
 
 .recipe-thumb {
 	position: relative;
-	width: 128px;
-	height: 128px;
+	width: 90px;
+	height: 90px;
 	border: 0.2em solid #CCCCCC;
 	text-align: center;
 	display: inline-block;
@@ -65,13 +78,13 @@
 
 .recipe-thumb i {
 	position: absolute;
-	top: 33%;
-	left: 33%;
+	top: 30%;
+	left: 30%;
 }
 
 .recipe-form-content {
 	display: inline-block;
-	margin-left: 13px;
+	margin-left: -20px;
 	margin-top: 5px;
 	width: 50%
 }
@@ -97,4 +110,20 @@
 
 .directions-text {
 	width: 99%;
+}
+
+.input-mini::-webkit-input-placeholder {
+   font-size: 11px;
+}
+
+.input-mini:-moz-placeholder { /* Firefox 18- */
+   font-size: 10px; 
+}
+
+.input-mini::-moz-placeholder {  /* Firefox 19+ */
+   font-size: 10px;
+}
+
+.input-mini:-ms-input-placeholder {  
+   font-size: 10px; 
 }

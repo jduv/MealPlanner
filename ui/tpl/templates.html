@@ -1,19 +1,23 @@
 <!-- This is the recipes screen -->
-<script id="recipes" type="text/html">
+<script id="recipeView" type="text/html">
 	<h2>Hello from recipes</h2>
 	<div>This is my test</div>
 </script>
 
 <!-- Planner screen -->
-<script id="planner" type="text/html">
-<div>
+<script id="plannerView" type="text/html">
 	<h2>Hello from planner</h2>
-	</div>
+	<div>This is my test</div>
+</script>
+
+<script id="ingredientsView" type="text/html">
+	<h2>Hello from ingredients</h2>
+	<div>This is my test</div>
 </script>
 
 <!-- New recipe screen -->
-<script id="newRecipe" type="text/html">
-	<form>
+<script id="newRecipeView" type="text/html">
+	<form action="#addRecipe" method="post">
 		<fieldset>
 			<legend>Add a new recipe:</legend>
 			<div class="row">
@@ -22,7 +26,7 @@
 						<i class="icon-camera-retro icon-3x icon-muted"></i>
 					</div>
 				</div>
-				<div class="recipe-form-content span8">
+				<div class="recipe-form-content span10">
 					<input class="input-xlarge" type="text" placeholder="Recipe name"/>
 					<br>
 					<select class="input-xlarge">
@@ -38,26 +42,22 @@
 			</div>
 			<div class="ingredients-list-container">
 				<legend class="sub-legend">Ingredients</legend>
-					{{>ingredientsList}}
+				<ul class="ingredients-list">
+				</ul>
+				<a class="btn btn-success btn-block btn-large" href="#addIngredient"><i class="icon-plus-sign"></i> Add Another Ingredient</a>
 			</div>
 			<legend class="sub-legend">Directions</legend>
 			<textarea class="directions-text" rows="4" placeholder="Enter directions here"></textarea>
+			<button class="btn btn-block btn-large btn-primary" type="submit">
+			<i class="icon-upload-alt"></i> Submit</button>
 		</fieldset>
 	</form>
 </script>
 
-<script id="ingredientsList" type="text/html">
-		<ul class="ingredients-list">
-			<li>
-				{{>ingredient}}
-			</li>
-		</ul>
-		<a class="btn btn-success btn-block btn-large" href="#"><i class="icon-plus-sign"></i> Add Another Ingredient</a>
-</script>
-
+<!-- Generic template for new ingredients on the recipe screen -->
 <script id="ingredient" type="text/html">
-	<form class="form-inline">
-   		<i class="icon-check icon-2x"></i>
+	<li id="ingredient-{{id}}">
+		<i class="icon-check icon-2x"></i>
 		<input class="input-large" type="text" placeholder="Ingredient name" /> 
 		<select class="input-medium">
 			<option>Measurement</option>
@@ -65,9 +65,14 @@
 			<option>Weight</option>
 			<option>Quantity</option>
 		</select>
-		<input class="input-small" type="number" min="0" placeholder="Amount" />
+		<input class="input-mini" type="number" min="0" placeholder="Amount" />
 		<select class="input-medium">
 			<option>Units</option>
 		</select>
-	</form>
+		</li>
+</script>
+
+<script id="newIngredientView" type="text/html">
+	<h2>Hello from new ingredients</h2>
+	<div>This is my test</div>
 </script>

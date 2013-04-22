@@ -1,11 +1,13 @@
+// This module contains the business logic for the app.
 var mealPlannerApp = (function() {
 	return {
 		// Write me.
 	}
 }());
 
-// Main application execution.
+// Main application execution. Sets up routes and handles page swapping.
 (function() {
+
 	// Hooks for doc.ready
 	$(document).ready(function () {
 		// Load all templates.
@@ -39,7 +41,6 @@ var mealPlannerApp = (function() {
 	// Runs the app. Call after templates are loaded.
 	function runApp()
 	{
-		// Add main sammy route
 		var app = $.sammy("#app", function() {
 
 			// Make transitions purdy.
@@ -55,36 +56,53 @@ var mealPlannerApp = (function() {
 			};
 
 			this.get("#boot", function(context) {
-				$("#app").html(ich.recipes());
+				$("#app").html(ich.recipeView());
 				$("#nav-recipes").addClass("active");
-				$("#back-cancel-btn").hide();
+				$("#add-recipe-btn").prop("href", "#newRecipe").fadeIn("fast");
 			});
 
-		     // set up routes.
 		     this.get("#recipes", function(context) {
-		     	context.app.swap(ich.recipes());
-		     	$("#nav-recipes").addClass("active");
-		     	$("#nav-planner").removeClass("active");
-		     	$("#add-recipe-btn").fadeIn("fast");
-		     	$("#back-cancel-btn").fadeOut("fast");	
+		     	context.app.swap(ich.recipeView());
+		     	$("#add-recipe-btn").prop("href", "#newRecipe").fadeIn("fast");
+		     	$("#btn-back").fadeOut("fast");	
+		     });
+
+		     this.get("#ingredients", function(context) {
+		     	context.app.swap(ich.ingredientsView());
+		     	$("#add-recipe-btn").prop("href", "#newIngredient").fadeIn("fast");
+		     	$("#btn-back").fadeOut("fast");	
 		     });
 
 		     this.get("#planner", function(context) {
-		     	context.app.swap(ich.planner());
-		     	$("#nav-planner").addClass("active");
-		     	$("#nav-recipes").removeClass("active");
+		     	context.app.swap(ich.plannerView());
 		     	$("#add-recipe-btn").fadeOut("fast");
-		     	$("#back-cancel-btn").fadeOut("fast");		     	
+		     	$("#btn-back").fadeOut("fast");		     	
 		     })
 
 		     this.get("#newRecipe", function(context) {
-		     	context.app.swap(ich.newRecipe());
-		     	$(".nav li").removeClass("active");
+		     	var newRecipe = ich.newRecipeView();
+		     	var ingredient = ich.ingredient({ id : 0 });
+		     	newRecipe.find(".ingredients-list").append(ingredient);
+		     	context.app.swap(newRecipe);
 
-		     	// check to see if the button is shown first.
+		     	// handle navigation stuff
+		     	$(".nav li").removeClass("active");
 		     	$("#add-recipe-btn").fadeOut("fast");
-		     	$("#back-cancel-btn").fadeIn("fast");
-		     })
+		     	$("#btn-back").prop("href", "#recipes").fadeIn("fast");
+		     });
+
+			this.get("#newIngredient", function(context) {
+		     	context.app.swap(ich.newIngredientView());
+
+		     	// handle navigation stuff
+		     	$(".nav li").removeClass("active");
+		     	$("#add-recipe-btn").fadeOut("fast");
+		     	$("#btn-back").prop("href", "#ingredients").fadeIn("fast");
+		     });
+
+		     this.post("#addRecipe", function(context) {
+	     		console.log("Posted to recipes");
+		     });
 		 });
 
 		// Run the application
