@@ -32,7 +32,7 @@ var mealPlannerApp = (function() {
 				success();
 			})
 		.fail(function() {
-			$("#app").append("Error loading templates!");
+			$("#app").append("<h1>Error loading templates! Unable to continue!</h1>");
 		});
 	}
 
@@ -41,43 +41,43 @@ var mealPlannerApp = (function() {
 	{
 		// Add main sammy route
 		var app = $.sammy("#app", function() {
-			var currentHash;
-			var transitioning = false;
 
 			// Make transitions purdy.
 			this.swap = function(content, callback) {
 				var context = this;
-		     	context.$element().fadeOut('fast', function() {
-		       		context.$element().html(content);
-		       		context.$element().fadeIn('fast', function() {
-			       		if (callback) {
-			       			callback.apply();
-			       		}
-	       			});
-		       });
+				context.$element().hide();
+	       		context.$element().html(content);
+	       		context.$element().fadeIn('fast', function() {
+		       		if (callback) {
+		       			callback.apply();
+		       		}
+	       		});
 			};
 
 			this.get("#boot", function(context) {
-				$(".front").html(ich.recipes());
+				$("#app").html(ich.recipes());
+				$("#nav-recipes").addClass("active");
 			});
 
 		     // set up routes.
 		     this.get("#recipes", function(context) {
-	     		console.log("transitioning not false");
 		     	context.app.swap(ich.recipes());
 		     	$("#nav-recipes").addClass("active");
 		     	$("#nav-planner").removeClass("active");
+		     	$("#add-recipe-btn").fadeIn("fast");
 		     });
 
 		     this.get("#planner", function(context) {
-	     		console.log("transitioning not false");
 		     	context.app.swap(ich.planner());
 		     	$("#nav-planner").addClass("active");
-		     	$("#nav-recipes").removeClass("active");		     	
+		     	$("#nav-recipes").removeClass("active");
+		     	$("#add-recipe-btn").fadeOut("fast");		     	
 		     })
 
 		     this.get("#newRecipe", function(context) {
 		     	context.app.swap(ich.newRecipe());
+		     	$(".nav li").removeClass("active");
+		     	$("#add-recipe-btn").fadeOut("fast");
 		     })
 		 });
 

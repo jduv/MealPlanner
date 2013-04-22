@@ -1,15 +1,74 @@
-<!-- This is the home screen -->
+<!-- This is the recipes screen -->
 <script id="recipes" type="text/html">
 	<h2>Hello from recipes</h2>
 	<div>This is my test</div>
 </script>
 
+<!-- Planner screen -->
 <script id="planner" type="text/html">
+<div>
 	<h2>Hello from planner</h2>
+	</div>
 </script>
 
+<!-- New recipe screen -->
 <script id="newRecipe" type="text/html">
-	<h2>Add a new recipe:</h2>
 	<form>
+		<fieldset>
+			<legend>Add a new recipe:</legend>
+			<div class="row">
+				<div class="span2">
+					<div class="icon-border recipe-thumb">
+						<i class="icon-camera-retro icon-3x icon-muted"></i>
+					</div>
+				</div>
+				<div class="recipe-form-content span8">
+					<input class="input-xlarge" type="text" placeholder="Recipe Name"/>
+					<br>
+					<label>Serving size</label>
+					<select class="input-xlarge">
+						<option>Select</option>
+						<option>2</option>
+						<option>4</option>
+						<option>6</option>
+						<option>8</option>
+						<option>10</option>
+						<option>12</option>
+					</select>
+				</div>
+			</div>
+			<div class="ingredients-list-container">
+				<legend class="sub-legend">Ingredients</legend>
+					{{>ingredientsList}}
+			</div>
+			<legend class="sub-legend">Directions</legend>
+			<textarea class="directions-text" rows="4" placeholder="Enter directions here"></textarea>
+		</fieldset>
+	</form>
+</script>
+
+<script id="ingredientsList" type="text/html">
+		<ul class="ingredients-list">
+			<li>
+				{{>ingredient}}
+			</li>
+		</ul>
+		<a class="btn btn-primary btn-block btn-large" href="#"><i class="icon-plus-sign"></i> Add Another Ingredient</a>
+</script>
+
+<script id="ingredient" type="text/html">
+	<form class="form-inline">
+   		<i class="icon-check icon-2x"></i>
+		<input class="input-large" type="text" placeholder="Ingredient name" /> 
+		<select class="input-medium">
+			<option>Measurement</option>
+			<option>Volume</option>
+			<option>Weight</option>
+			<option>Quantity</option>
+		</select>
+		<input class="input-small" type="number" min="0" placeholder="Amount" />
+		<select class="input-medium">
+			<option>Units</option>
+		</select>
 	</form>
 </script>

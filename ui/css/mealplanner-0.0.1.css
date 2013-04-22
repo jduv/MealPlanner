@@ -1,9 +1,9 @@
 #app {
-	margin-top: 10px;
+	margin-top: 60px;
 }
 
 .header {
-	position: relative;
+	position: fixed;
 	border: 1px solid #b3b3b3;
 	color: #ffffff;
 	background: #a90329; /* Old browsers */
@@ -14,11 +14,11 @@
 	background: -ms-linear-gradient(top,  #a90329 0%,#8f0222 44%,#6d0019 100%); /* IE10+ */
 	background: linear-gradient(to bottom,  #a90329 0%,#8f0222 44%,#6d0019 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a90329', endColorstr='#6d0019',GradientType=0 ); /* IE6-9 */
-	margin-top: 0px;
+	top: 0;
 	left: 0;
 	z-index: 1030;
 	width: 100%;
-
+	display: block;
 }
 
 .center {
@@ -43,6 +43,46 @@
 	text-decoration: none;
 }
 
-.header-text {
+.recipe-thumb {
+	position: relative;
+	width: 128px;
+	height: 128px;
+	border: 0.2em solid #CCCCCC;
+	text-align: center;
 	display: inline-block;
+}
+
+.recipe-thumb i {
+	position: absolute;
+	top: 33%;
+	left: 33%;
+}
+
+.recipe-form-content {
+	display: inline-block;
+	margin-left: 13px;
+	margin-top: 15px;
+	width: 50%
+}
+
+.sub-legend {
+	font-size: 18px;
+}
+
+.ingredients-list {
+	list-style: none;
+	list-style-type: none;
+}
+
+.ingredients-list li {
+	margin-left: -15px;
+}
+
+.ingredients-list select,
+.ingredients-list input {
+	margin-left: 10px;
+}
+
+.directions-text {
+	width: 99%;
 }
