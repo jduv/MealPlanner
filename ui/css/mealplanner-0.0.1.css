@@ -1,5 +1,7 @@
 #app {
 	margin-top: 60px;
+	margin-bottom: 30px;
+	min-width: 700px;
 }
 
 .header {
@@ -27,6 +29,12 @@
      margin-right: auto;
 }
 
+.nav-icon {
+	position: relative;
+	top: 5px;
+	right: 5px;
+}
+
 .btn-header-container-right {
 	position: absolute;
 	top: 18%;
@@ -40,9 +48,9 @@
 }
 
 .btn-header {
-	color: #FFFFFF;
+	color: #fff;
 	background: rgba(0,0,0,0);
-	border: 1px solid #FFFFFF;
+	border: 1px solid #fff;
 }
 
 .btn-header:hover, 
@@ -67,11 +75,47 @@
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a90329', endColorstr='#6d0019',GradientType=0 ); /* IE6-9 */
 }
 
+.btn-save {
+	color: #fff;
+	text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+	background-color: #ff2223;
+	background-image: -moz-linear-gradient(top,#a90329,#6d0019);
+	background-image: -webkit-gradient(linear,0 0,0 100%,from(#a90329),to(#6d0019));
+	background-image: -webkit-linear-gradient(top,#a90329,#6d0019);
+	background-image: -o-linear-gradient(top,#a90329,#6d0019);
+	background-image: linear-gradient(to bottom,#a90329,#6d0019);
+	background-repeat: repeat-x;
+	border-color: #6d0019 #6d0019 #a90329;
+	border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a90329',endColorstr='#6d0019',GradientType=0);
+	filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.btn-save:hover, 
+.btn-save:focus, 
+.btn-save:active, 
+.btn-save.active, 
+.btn-save.disabled,
+.btn-save[disabled] {
+	color: #fff;
+	background-color: #6d0019;
+}
+
+.btn-save:hover, .btn-save:focus {
+	color: #fff;
+	text-decoration: none;
+	background-position: 0 -15px;
+	-webkit-transition: background-position .1s linear;
+	-moz-transition: background-position .1s linear;
+	-o-transition: background-position .1s linear;
+	transition: background-position .1s linear;
+}
+
 .recipe-thumb {
 	position: relative;
 	width: 90px;
 	height: 90px;
-	border: 0.2em solid #CCCCCC;
+	border: 0.2em solid #ccc;
 	text-align: center;
 	display: inline-block;
 }
@@ -82,7 +126,7 @@
 	left: 30%;
 }
 
-.recipe-form-content {
+.inline-form-content {
 	display: inline-block;
 	margin-left: -20px;
 	margin-top: 5px;
@@ -94,22 +138,8 @@
 	margin-top: 5px;
 }
 
-.ingredients-list {
-	list-style: none;
-	list-style-type: none;
-}
-
-.ingredients-list li {
-	margin-left: -15px;
-}
-
-.ingredients-list select,
-.ingredients-list input {
-	margin-left: 10px;
-}
-
-.directions-text {
-	width: 99%;
+.directions-textarea {
+	width: 98%;
 }
 
 .input-mini::-webkit-input-placeholder {
@@ -126,4 +156,36 @@
 
 .input-mini:-ms-input-placeholder {  
    font-size: 10px; 
+}
+
+.form-optional {
+	margin-bottom: 10px;
+	color: #999;
+}
+
+.serving-size-container {
+	width: 300px;
+}
+
+.checkbox-label {
+	margin: 0px 10px;
+}
+
+.inline-jqm-list {
+	position: relative;
+	display: inline-block;
+	margin: 3px 7px;
+	top: -5px;
+}
+
+.ingredient-autocomplete
+{
+	display: inline-block;
+	margin-left: 5px;
+}
+
+.measurement-types-help li {
+	margin-top: 19px;
+	font-style: italic;
+	color: #999;
 }

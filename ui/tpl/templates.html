@@ -21,58 +21,121 @@
 		<fieldset>
 			<legend>Add a new recipe:</legend>
 			<div class="row">
-				<div class="span2">
+				<section class="span2">
 					<div class="icon-border recipe-thumb">
 						<i class="icon-camera-retro icon-3x icon-muted"></i>
 					</div>
-				</div>
-				<div class="recipe-form-content span10">
-					<input class="input-xlarge" type="text" placeholder="Recipe name"/>
+				</section>
+				<section class="inline-form-content span10">
+					<input name="recipeName" class="input-xlarge" type="text" placeholder="Name" data-role="none"/>
 					<br>
-					<select class="input-xlarge">
-						<option>Service size</option>
-						<option>2</option>
-						<option>4</option>
-						<option>6</option>
-						<option>8</option>
-						<option>10</option>
-						<option>12</option>
-					</select>
-				</div>
+					<div class="serving-size-container">
+						<select name="servingSize">
+							<option>Serving size</option>
+							<option>2</option>
+							<option>4</option>
+							<option>6</option>
+							<option>8</option>
+							<option>10</option>
+							<option>12</option>
+						</select>
+					</div>
+				</section>
 			</div>
-			<div class="ingredients-list-container">
+			<section class="ingredients-list-container">
 				<legend class="sub-legend">Ingredients</legend>
-				<ul class="ingredients-list">
+				<ul id="ingredients-list" class="unstyled">
 				</ul>
-				<a class="btn btn-success btn-block btn-large" href="#addIngredient"><i class="icon-plus-sign"></i> Add Another Ingredient</a>
-			</div>
+				<a id="addIngredientToRecipe" class="btn btn-success btn-block btn-large" data-role="none">
+					<i class="icon-plus-sign"></i> Add Another Ingredient</a>
+			</section>
 			<legend class="sub-legend">Directions</legend>
-			<textarea class="directions-text" rows="4" placeholder="Enter directions here"></textarea>
-			<button class="btn btn-block btn-large btn-primary" type="submit">
-			<i class="icon-upload-alt"></i> Submit</button>
+			<textarea class="directions-textarea" rows="4" placeholder="Enter directions here" data-role="none"></textarea>
+			<button class="btn btn-block btn-large btn-save" type="submit">
+			<i class="icon-upload-alt"></i> Save</button>
 		</fieldset>
 	</form>
 </script>
 
 <!-- Generic template for new ingredients on the recipe screen -->
-<script id="ingredient" type="text/html">
+<script id="newIngredient" type="text/html">
 	<li id="ingredient-{{id}}">
 		<i class="icon-check icon-2x"></i>
-		<input class="input-large" type="text" placeholder="Ingredient name" /> 
-		<select class="input-medium">
-			<option>Measurement</option>
-			<option>Volume</option>
-			<option>Weight</option>
-			<option>Quantity</option>
-		</select>
-		<input class="input-mini" type="number" min="0" placeholder="Amount" />
-		<select class="input-medium">
-			<option>Units</option>
-		</select>
+		<span id="ingredient-autocomplete-{{id}}" class="ingredient-autocomplete">
+			<input name="ingredientName{{id}}" class="input-large" type="text" placeholder="Add ingredient... (start typing)" data-role="none"/> 
+		</span>
+		<span id="ingredient-measurements-{{id}}">
+			<div class="input-large inline-jqm-list">
+				<select disabled>
+					<option>Measurement</option>
+				</select>
+			</div>
+			<input class="input-small" type="number" min="0" placeholder="Amount" data-role="none" disabled/>
+			<div class="input-medium inline-jqm-list">
+				<select disabled>
+					<option>Units</option>
+				</select>
+			</div>
+		</span>
 		</li>
 </script>
 
 <script id="newIngredientView" type="text/html">
-	<h2>Hello from new ingredients</h2>
-	<div>This is my test</div>
+<form action="#addIngredient" method="post">
+		<fieldset>
+			<legend>Add a new ingredient:</legend>
+			<div class="row">
+				<section class="span2">
+					<div class="icon-border recipe-thumb">
+						<i class="icon-lemon icon-3x icon-muted"></i>
+					</div>
+				</section>
+				<section class="inline-form-content span10">
+					<input class="input-xlarge" type="text" placeholder="Name" data-role="none"/>
+					<br>
+					<input class="input-xlarge" type="text" placeholder="Store brand" data-role="none"/>
+					<span class="help-inline form-optional"><em>Optional</em></span>
+				</section>
+			</div>
+			<section>
+					<div>
+						<legend class="sub-legend">Measurement types</legend>
+						<p>Select the appropriate measurement types you wish to support for the ingredient below, and please provide a conversion factor when asked.
+						   You may select more than one if desired.</p>
+						<div class="row">
+							<div class="span3">
+								<fieldset data-role="controlgroup">
+									<label class="checkbox-label">
+										<input type="checkbox" value="volume" />Volume
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" value="weight"/>Weight
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" value="quantity"/>Quantity
+									</label>
+								</fieldset>
+							</div>
+							<div class="span4">
+								<ul class="unstyled measurement-types-help">
+									<li>(tsp, tbsp, cups, etcetera)</li>
+									<li>(ounces, lb, etcetera)</li>
+									<li>(individual units, e.g. one strawberry)</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+			</section>
+			<ul id="conversions-list" class="unstyled">
+			</ul>
+			<br>
+			<button class="btn btn-block btn-large btn-save" type="submit">
+				<i class="icon-upload-alt"></i> Save</button>
+		</fieldset>
+	</form>
+</script>
+
+<script id="conversionView" type="text/html">
+<div class="well">
+	<p>Convert {{convertFrom}} to {{convertTo}}:</p>
 </script>

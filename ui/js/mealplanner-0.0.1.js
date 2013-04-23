@@ -1,10 +1,3 @@
-// This module contains the business logic for the app.
-var mealPlannerApp = (function() {
-	return {
-		// Write me.
-	}
-}());
-
 // Main application execution. Sets up routes and handles page swapping.
 (function() {
 
@@ -43,11 +36,15 @@ var mealPlannerApp = (function() {
 	{
 		var app = $.sammy("#app", function() {
 
+			var currentController;
+
 			// Make transitions purdy.
 			this.swap = function(content, callback) {
 				var context = this;
 				context.$element().hide();
 	       		context.$element().html(content);
+	       		context.$element().trigger("create");
+
 	       		context.$element().fadeIn('fast', function() {
 		       		if (callback) {
 		       			callback.apply();
@@ -58,50 +55,61 @@ var mealPlannerApp = (function() {
 			this.get("#boot", function(context) {
 				$("#app").html(ich.recipeView());
 				$("#nav-recipes").addClass("active");
-				$("#add-recipe-btn").prop("href", "#newRecipe").fadeIn("fast");
+				$("#add-recipe-btn").prop("href", "#newRecipeView").fadeIn("fast");
 			});
 
-		     this.get("#recipes", function(context) {
+		     this.get("#recipeView", function(context) {
 		     	context.app.swap(ich.recipeView());
-		     	$("#add-recipe-btn").prop("href", "#newRecipe").fadeIn("fast");
+		     	$("#nav-recipes").addClass("active");
+		     	$("#add-recipe-btn").prop("href", "#newRecipeView").fadeIn("fast");
 		     	$("#btn-back").fadeOut("fast");	
 		     });
 
-		     this.get("#ingredients", function(context) {
+		     this.get("#ingredientsView", function(context) {
 		     	context.app.swap(ich.ingredientsView());
-		     	$("#add-recipe-btn").prop("href", "#newIngredient").fadeIn("fast");
+		     	$("#nav-ingredients").addClass("active");
+		     	$("#add-recipe-btn").prop("href", "#newIngredientView").fadeIn("fast");
 		     	$("#btn-back").fadeOut("fast");	
 		     });
 
-		     this.get("#planner", function(context) {
+		     this.get("#plannerView", function(context) {
 		     	context.app.swap(ich.plannerView());
+		     	$("#nav-planner").addClass("active");
 		     	$("#add-recipe-btn").fadeOut("fast");
 		     	$("#btn-back").fadeOut("fast");		     	
 		     })
 
-		     this.get("#newRecipe", function(context) {
-		     	var newRecipe = ich.newRecipeView();
-		     	var ingredient = ich.ingredient({ id : 0 });
-		     	newRecipe.find(".ingredients-list").append(ingredient);
-		     	context.app.swap(newRecipe);
+		     this.get("#newRecipeView", function(context) {
+		     	// Let the controller handle the nasty stuff.
+		     	currentController = controllerFactory.newRecipeViewController();
+		     	context.app.swap(currentController.getNewRecipeView());
 
-		     	// handle navigation stuff
+		     	// We should handle navigation stuff
 		     	$(".nav li").removeClass("active");
 		     	$("#add-recipe-btn").fadeOut("fast");
-		     	$("#btn-back").prop("href", "#recipes").fadeIn("fast");
+		     	$("#btn-back").prop("href", "#recipeView").fadeIn("fast");
 		     });
 
-			this.get("#newIngredient", function(context) {
-		     	context.app.swap(ich.newIngredientView());
+			this.get("#newIngredientView", function(context) {
+				currentController = controllerFactory.newIngredientViewController()
+		     	context.app.swap(currentController.getNewIngredientView());
 
-		     	// handle navigation stuff
+		     	// We should handle navigation stuff
 		     	$(".nav li").removeClass("active");
 		     	$("#add-recipe-btn").fadeOut("fast");
-		     	$("#btn-back").prop("href", "#ingredients").fadeIn("fast");
+		     	$("#btn-back").prop("href", "#ingredientsView").fadeIn("fast");
 		     });
 
 		     this.post("#addRecipe", function(context) {
-	     		console.log("Posted to recipes");
+		     	var formData = $(context.target).toObject();
+	     		console.log(JSON.stringify(formData));
+
+	     		// Silently submit.
+	     		return false;
+		     });
+
+		     this.post("#addIngredient", function(context) {
+		     	console.log("Posted to ingredients");
 		     });
 		 });
 
