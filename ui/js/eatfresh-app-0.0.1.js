@@ -28,10 +28,10 @@ var ui = (function() {
 			element.modal('show');
 		},
 		showModalLoading : function() {
-			$('#loading-modal').modal({ backdrop : 'static', keyboard : false });
+			//$('#loading-modal').modal('show');
 		},
 		hideModalLoading : function() {
-			$('#loading-modal').modal('hide');
+			//$('#loading-modal').modal('hide');
 		},
 		checkboxify : function(args) {			
 			return thingify(args, function (index, item, options) {
