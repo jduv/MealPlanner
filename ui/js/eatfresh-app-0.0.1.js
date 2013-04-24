@@ -28,9 +28,11 @@ var ui = (function() {
 			element.modal('show');
 		},
 		showModalLoading : function() {
+			// Loading modals currently only work in Chrome
 			//$('#loading-modal').modal('show');
 		},
 		hideModalLoading : function() {
+			// Loading modals currently only work in Chrome
 			//$('#loading-modal').modal('hide');
 		},
 		checkboxify : function(args) {			
