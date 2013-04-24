@@ -6,14 +6,15 @@ var ui = (function() {
 	var thingify = function(args, creator) {
 		args = {
 				items : args.items || [],
-				textSelector : args.textSelector || function () {},
-				valueSelector : args.valueSelector || function () {},
-				idSelector : args.idSelector || function() {}
+				textSelector : args.textSelector || function() {},
+				valueSelector : args.valueSelector || function() {},
+				idSelector : args.idSelector || function() {},
+				nameSelector : args.nameSelector || function() {}
 		};
 
 		var items = [];
 		_.forEach(args.items, function(value, key, collection) {
-			items.push(creator(key, value));
+			items.push(creator(key, value, args));
 		})
 
 		return items;
@@ -33,21 +34,25 @@ var ui = (function() {
 			$('#loading-modal').modal('hide');
 		},
 		checkboxify : function(args) {			
-			return thingify(args, function (index, item) {
+			return thingify(args, function (index, item, options) {
 				var label = $('<label></label>')
 				.addClass('label-checkbox');
 
 				var input = $('<input />')
-				.attr('id', args.idSelector(item))
-				.attr('type', 'checkbox');
+				.attr('id', options.idSelector(item))
+				.attr('type', 'checkbox')
+				.attr('name', options.nameSelector(item))
+				.attr('value', options.valueSelector(item));
 
-				label.append(input).append(args.textSelector(item));
+				label.append(input).append(options.textSelector(item));
 				return label;
 			});
 		},
 		optionify : function(args) {
-			return thingify(args, function(index, item) {
-				return $('<option></option>', { value : args.valueSelector(item), text : args.textSelector(item)});
+			return thingify(args, function(index, item, options) {
+				return $('<option></option>')
+				.attr('value', options.valueSelector(item))
+				.append(options.textSelector(item));
 			});
 		}
 	};
@@ -142,43 +147,95 @@ var eatfresh = (function () {
 			// Handles all those nasty conversion type menus.
 			function handleConversions() {
 				var checked = $('input:checked', measurementTypesElement);
+				var viewGenerator = createConversionViewGenerator();
 
 				// A peculiar way of handling this problem, but it's readable. The case statements represent
 				// the number of checkboxes checked, and we'll build out the view based on that.
 				switch(checked.length) {
 					// two checkboxes checked, create a conversion from A to B.
 					case 2:
-						var convertFrom = measurementTypes[checked.eq(0).attr('id')];
-						var convertTo = measurementTypes[checked.eq(0).attr('id')];
+						var convertFrom = measurementTypes[checked.eq(0).attr('value')];
+						var convertTo = measurementTypes[checked.eq(1).attr('value')];
+						var view = viewGenerator.generateConversionView(convertFrom, convertTo);
 
-						if(convertFrom && convertTo)
-						{
-							var view = ich.conversionView({ 
-								convertFrom : convertFrom.get('name'), 
-								convertTo : convertTo.get('name')
-							});
-
-							conversionsList.html(view);
+						if(view) {
+							conversionsList.html(view).trigger('create'); // force jqm to re-parse th element
 							conversionsList.show();
 						}
 
 						break;
-						default:
+					case 3:
+						var convertA = measurementTypes[checked.eq(0).attr('value')];
+						var convertB = measurementTypes[checked.eq(1).attr('value')];
+						var convertC = measurementTypes[checked.eq(2).attr('value')];
+
+						var view1 = viewGenerator.generateConversionView(convertA, convertB);
+						var view2 = viewGenerator.generateConversionView(convertB, convertC);
+						var view3 = viewGenerator.generateConversionView(convertC, convertA);
+
+						if(view1 && view2 && view3) {
+							conversionsList.html('');
+							conversionsList.append(view1);
+							conversionsList.append(view2);
+							conversionsList.append(view3);
+							conversionsList.trigger('create'); // force jqm to re-parse the element
+							conversionsList.show();
+						}
+
+						break;
+					default:
 							conversionsList.html('');
 							conversionsList.hide();
 				}
 			}
 
-			function generateConversionView(convertFrom, convertTo) {
-				var view;
-				if(convertFrom && convertTo) {
-					view = ich.conversionView({ 
-								convertFrom : convertFrom.get('name'), 
-								convertTo : convertTo.get('name')
-							});
+			// This closure maintains state for the conversion views.
+			var createConversionViewGenerator = function() {
+				var id = 0;
+
+				// Tells optionify where the text for a unit type is
+				function unitTypeTextSelector(item) {
+					return item.get('name');
 				}
-				return view;
-			}
+
+				// Tells optionify where the value for a unit type is.
+				function unitTypeValueSelector(item) {
+					return item.id;
+				}
+
+				return {
+					generateConversionView : function(convertFrom, convertTo) {
+						var view;
+						if(convertFrom && convertTo) {
+							view = ich.conversionView({ 
+										id : id,
+										convertFrom : convertFrom.get('name'), 
+										convertTo : convertTo.get('name')
+									});
+
+							$('#fromUnits', view).append(
+								ui.optionify({
+									id : id,
+									items : convertFrom.unitTypes,
+									textSelector : unitTypeTextSelector,
+									valueSelector : unitTypeValueSelector
+								}));
+
+							$('#toUnits', view).append(
+								ui.optionify({
+									id : id,
+									items : convertTo.unitTypes,
+									textSelector : unitTypeTextSelector,
+									valueSelector : unitTypeValueSelector
+								}))
+						}
+
+						id++; // increment count.
+						return view;
+					}
+				}
+
+			};
 
 			// Create the controller.
 			var controller =  {
@@ -187,11 +244,14 @@ var eatfresh = (function () {
 					loadMeasurementData(function() {
 						var list = ui.checkboxify({
 							items : measurementTypes,
-							idSelector : function (item) {
-								return item.id;
+							textSelector : function(measurementType) {
+								return measurementType.get('name');
 							},
-							textSelector : function (item) {
-								return item.get('name');
+							valueSelector : function(measurementType) {
+								return measurementType.id;
+							},
+							nameSelector : function(measurementType) {
+								return 'ingredient.supportedMeasurementTypes[]';
 							}
 						});
 

@@ -1,5 +1,6 @@
 // Main application execution. Sets up routes and handles page swapping.
 (function() {
+	var fadeInTime = 500;
 
 	// Hooks for doc.ready
 	$(document).ready(function () {
@@ -49,7 +50,7 @@
        		context.$element().html(content);
        		context.$element().trigger('create');
 
-       		context.$element().fadeIn('fast', function() {
+       		context.$element().fadeIn(fadeInTime, function() {
 	       		if (callback) {
 	       			callback.apply();
 	       		}
@@ -60,14 +61,14 @@
 		this.get('#boot', function(context) {
 			$('#app').html(ich.recipeView());
 			$('#nav-recipes').addClass('active');
-			$('#add-recipe-btn').prop('href', '#newRecipeView').fadeIn('fast');
+			$('#add-recipe-btn').prop('href', '#newRecipeView').fadeIn(fadeInTime);
 		});
 
 		// Recipe view.
 	     this.get('#recipeView', function(context) {
 	     	context.app.swap(ich.recipeView());
 	     	$('#nav-recipes').addClass('active');
-	     	$('#add-recipe-btn').prop('href', '#newRecipeView').fadeIn('fast');
+	     	$('#add-recipe-btn').prop('href', '#newRecipeView').fadeIn(fadeInTime);
 	     	$('#btn-back').fadeOut('fast');	
 	     });
 
@@ -75,7 +76,7 @@
 	     this.get('#ingredientsView', function(context) {
 	     	context.app.swap(ich.ingredientsView());
 	     	$('#nav-ingredients').addClass('active');
-	     	$('#add-recipe-btn').prop('href', '#newIngredientView').fadeIn('fast');
+	     	$('#add-recipe-btn').prop('href', '#newIngredientView').fadeIn(fadeInTime);
 	     	$('#btn-back').fadeOut('fast');	
 	     });
 
@@ -89,7 +90,7 @@
 
 	     // New recipe view
 	     this.get('#newRecipeView', function(context) {
-	     	
+
 	     	var controller = eatfresh.newRecipeViewController();
 	     	controller.loadView(function(view) {
 	     		context.app.swap(view);
@@ -97,7 +98,7 @@
 
 	     	$('.nav li').removeClass('active');
 	     	$('#add-recipe-btn').fadeOut('fast');
-	     	$('#btn-back').prop('href', '#recipeView').fadeIn('fast');
+	     	$('#btn-back').prop('href', '#recipeView').fadeIn(fadeInTime);
 	     });
 
 	     // New ingredient view
@@ -110,7 +111,7 @@
 
 	     	$('.nav li').removeClass('active');
 	     	$('#add-recipe-btn').fadeOut('fast');
-	     	$('#btn-back').prop('href', '#ingredientsView').fadeIn('fast');
+	     	$('#btn-back').prop('href', '#ingredientsView').fadeIn(fadeInTime);
 	     });
 
 	     this.post('#addRecipe', function(context) {

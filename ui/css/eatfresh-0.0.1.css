@@ -199,6 +199,10 @@
 	margin: 0px 10px;
 }
 
+.conversion-container input[type=number] {
+	margin-bottom: 10px;
+}
+
 #conversions-list {
 	padding-bottom: 25px;
 }

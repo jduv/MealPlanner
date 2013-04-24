@@ -100,8 +100,7 @@
 			<section>
 					<div>
 						<legend class="sub-legend">Measurement types</legend>
-						<p>Select the appropriate measurement types you wish to support for the ingredient below, and please provide a conversion factor when asked.
-						   You may select more than one if desired.</p>
+						<p>Select the appropriate measurement types you wish to support for the ingredient below, and please provide a conversion factor when asked. You may select more than one if desired, but <em>at least one</em> is required.</p>
 						<div class="row">
 							<div class="span3">
 								<fieldset id="measurement-types" data-role="controlgroup">
@@ -131,14 +130,18 @@
 		<h4>Convert {{convertFrom}} to {{convertTo}}:</h4>
 		<div class="conversion-container">
 			<input name="conversions[{{id}}].convertFromAmount" class="input-small" type="number" data-role="none"/>
-			<select name="conversions[{{id}}].convertFromUnits">
-				<option disabled selected value="">Units</option>
-			</select>
+			<div class="inline-jqm-list input-large">
+				<select id="fromUnits" name="conversions[{{id}}].convertFromUnits">
+					<option disabled selected value="">Select</option>
+				</select>
+			</div>
 			<span><i class="icon-exchange icon-2x"></i></span>
-			<input name="conversions[{{id}}].convertToAmount" class="input-small" type="number" data-role-"none" />
-			<select name="conversions[{{id}}].convertToUnits">
-				<option disabled selected value="">Units</option>
-			</select>
+			<input name="conversions[{{id}}].convertToAmount" class="input-small" type="number" data-role="none" />
+			<div class="inline-jqm-list input-large">
+				<select id="toUnits" name="conversions[{{id}}].convertToUnits">
+					<option disabled selected value="">Select</option>
+				</select>
+			</div>
 		</div>
 	</li>
 </script>
