@@ -27,11 +27,11 @@
 					</div>
 				</section>
 				<section class="inline-form-content span10">
-					<input name="recipeName" class="input-xlarge" type="text" placeholder="Name" data-role="none"/>
+					<input name="recipe.name" class="input-xlarge" type="text" placeholder="Name" data-role="none"/>
 					<br>
 					<div class="serving-size-container">
-						<select name="servingSize">
-							<option>Serving size</option>
+						<select name="recipe.servingSize">
+							<option value="0" disabled selected>Serving size</option>
 							<option>2</option>
 							<option>4</option>
 							<option>6</option>
@@ -50,7 +50,7 @@
 					<i class="icon-plus-sign"></i> Add Another Ingredient</a>
 			</section>
 			<legend class="sub-legend">Directions</legend>
-			<textarea class="directions-textarea" rows="4" placeholder="Enter directions here" data-role="none"></textarea>
+			<textarea name="recipe.directions" class="directions-textarea" rows="4" placeholder="Enter directions here" data-role="none"></textarea>
 			<button class="btn btn-block btn-large btn-save" type="submit">
 			<i class="icon-upload-alt"></i> Save</button>
 		</fieldset>
@@ -62,17 +62,17 @@
 	<li id="ingredient-{{id}}">
 		<i class="icon-check icon-2x"></i>
 		<span id="ingredient-autocomplete-{{id}}" class="ingredient-autocomplete">
-			<input name="ingredientName{{id}}" class="input-large" type="text" placeholder="Add ingredient... (start typing)" data-role="none"/> 
+			<input id="ingredientName{{id}}" name="ingredients[{{id}}].ingredient.name" class="input-large" type="text" placeholder="Add ingredient... (start typing)" data-role="none"/> 
 		</span>
 		<span id="ingredient-measurements-{{id}}">
 			<div class="input-large inline-jqm-list">
-				<select disabled>
+				<select name="ingredients[{{id}}].measurement" disabled>
 					<option>Measurement</option>
 				</select>
 			</div>
-			<input class="input-small" type="number" min="0" placeholder="Amount" data-role="none" disabled/>
+			<input name="ingredients[{{id}}].amount" class="input-small" type="number" min="0" placeholder="Amount" data-role="none" disabled/>
 			<div class="input-medium inline-jqm-list">
-				<select disabled>
+				<select name="ingredient[{{id}}.units" disabled>
 					<option>Units</option>
 				</select>
 			</div>
@@ -91,7 +91,7 @@
 					</div>
 				</section>
 				<section class="inline-form-content span10">
-					<input class="input-xlarge" type="text" placeholder="Name" data-role="none"/>
+					<input name="name" class="input-xlarge" type="text" placeholder="Name" data-role="none"/>
 					<br>
 					<input class="input-xlarge" type="text" placeholder="Store brand" data-role="none"/>
 					<span class="help-inline form-optional"><em>Optional</em></span>
@@ -104,30 +104,21 @@
 						   You may select more than one if desired.</p>
 						<div class="row">
 							<div class="span3">
-								<fieldset data-role="controlgroup">
-									<label class="checkbox-label">
-										<input type="checkbox" value="volume" />Volume
-									</label>
-									<label class="checkbox-label">
-										<input type="checkbox" value="weight"/>Weight
-									</label>
-									<label class="checkbox-label">
-										<input type="checkbox" value="quantity"/>Quantity
-									</label>
+								<fieldset id="measurement-types" data-role="controlgroup">
 								</fieldset>
 							</div>
 							<div class="span4">
 								<ul class="unstyled measurement-types-help">
+									<li>(individual units, e.g. one strawberry)</li>
 									<li>(tsp, tbsp, cups, etcetera)</li>
 									<li>(ounces, lb, etcetera)</li>
-									<li>(individual units, e.g. one strawberry)</li>
 								</ul>
 							</div>
 						</div>
 					</div>
 			</section>
-			<ul id="conversions-list" class="unstyled">
-			</ul>
+				<ul id="conversions-list" class="unstyled well" style="display: none;">
+				</ul>
 			<br>
 			<button class="btn btn-block btn-large btn-save" type="submit">
 				<i class="icon-upload-alt"></i> Save</button>
@@ -136,6 +127,18 @@
 </script>
 
 <script id="conversionView" type="text/html">
-<div class="well">
-	<p>Convert {{convertFrom}} to {{convertTo}}:</p>
+	<li>
+		<h4>Convert {{convertFrom}} to {{convertTo}}:</h4>
+		<div class="conversion-container">
+			<input name="conversions[{{id}}].convertFromAmount" class="input-small" type="number" data-role="none"/>
+			<select name="conversions[{{id}}].convertFromUnits">
+				<option disabled selected value="">Units</option>
+			</select>
+			<span><i class="icon-exchange icon-2x"></i></span>
+			<input name="conversions[{{id}}].convertToAmount" class="input-small" type="number" data-role-"none" />
+			<select name="conversions[{{id}}].convertToUnits">
+				<option disabled selected value="">Units</option>
+			</select>
+		</div>
+	</li>
 </script>

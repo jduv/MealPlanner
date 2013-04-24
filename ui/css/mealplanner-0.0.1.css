@@ -189,3 +189,21 @@
 	font-style: italic;
 	color: #999;
 }
+
+#loading-modal {
+	top: 50%;
+	opacity: 0.75;
+}
+
+.conversion-container input, select {
+	margin: 0px 10px;
+}
+
+#conversions-list {
+	padding-bottom: 25px;
+}
+
+#conversions-list li {
+	margin-bottom: 20px;
+	margin-left: 15px;
+}
