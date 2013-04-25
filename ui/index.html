@@ -30,9 +30,12 @@
 		<section class="navbar navbar-fixed-bottom">
 			<div class="navbar-inner">
 				<ul class="nav">
-					<li id="nav-recipes"><a href="#recipeView" data-role="none"><i class="icon-briefcase"></i> Recipe box</a></li>
-					<li id="nav-ingredients"><a href="#ingredientsView" data-role="none"><i class="icon-lemon"></i> Ingredients</a></li>
-					<li id="nav-planner"><a href="#plannerView" data-role="none"><i class="icon-calendar"></i> Daily planner</a></li>
+					<li id="nav-recipes">
+						<a href="#recipesView" data-role="none"><i class="icon-briefcase icon-2x pull-left"></i> <span>Recipe box</span></a></li>
+					<li id="nav-ingredients">
+						<a href="#ingredientsView" data-role="none"><i class="icon-shopping-cart icon-2x pull-left"></i> <span>Ingredients</a></li>
+					<li id="nav-planner">
+						<a href="#plannerView" data-role="none"><i class="icon-calendar icon-2x pull-left"></i> <span>Daily planner</span></a></li>
 				</ul>
 				<img class="pull-right nav-icon" src="img/rooster-inverted.png"></img>
 			</div>
@@ -40,6 +43,7 @@
 
 		<!-- Modals -->
 		<section id="modals">
+			<!-- Error modal -->
 			<div id="error-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
 			  <div class="modal-header">
 			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-role="none"><i class="icon-remove"></i></button>
@@ -53,6 +57,21 @@
 			  </div>
 			</div>
 
+			<!-- Successful modal -->
+			<div id="success-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+			  <div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-role="none"><i class="icon-remove"></i></button>
+			    <i class="icon-thumbs-up pull-left icon-2x"> </i><h3 id="success-modal-hdr">Success!</h3>
+			  </div>
+			  <div class="modal-body">
+			    <p id="success-modal-msg"></p>
+			  </div>
+			  <div class="modal-footer">
+			    <button class="btn btn-success btn-large btn-block" data-dismiss="modal" data-role="none"><i class="icon-check"></i> Ok, thanks!</a>
+			  </div>
+			</div>
+
+			<!-- Loading modal -->
 			<div id="loading-modal" class="modal hide fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
 				<div class="modal-body loading text-center">
 					<h2><i class="icon-spinner icon-spin"></i> Loading...</h2>
@@ -65,7 +84,7 @@
 	<script src="js/jquery-1.9.1.min.js"></script>
 	<script src="js/jquery-migrate-1.1.1.min.js"></script>
 	<script>
-		$(document).bind("mobileinit", function() {
+		$(document).bind("mobileinit", function () {
 			$.mobile.ajaxEnabled = false;
 			$.mobile.hashListeningEnabled = false;
 			$.mobile.ignoreContentEnabled=true;

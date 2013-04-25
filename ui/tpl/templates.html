@@ -1,5 +1,5 @@
 <!-- This is the recipes screen -->
-<script id="recipeView" type="text/html">
+<script id="recipeListView" type="text/html">
 	<h2>Hello from recipes</h2>
 	<div>This is my test</div>
 </script>
@@ -10,14 +10,30 @@
 	<div>This is my test</div>
 </script>
 
-<script id="ingredientsView" type="text/html">
-	<h2>Hello from ingredients</h2>
-	<div>This is my test</div>
+<!-- Ingredient list view -->
+<script id="ingredientListView" type="text/html">
+	<div class="ingredient-list-view-container">
+		<ul id="ingredient-list-view" class="unstyled" data-role="listview" data-autodividers="true">
+		</ul>
+	<div>
+</script>
+
+<!-- Template for an ingredient on the list -->
+<script id="ingredientListItem" type="text/html">
+	<li class="row">
+		<section class="span1">
+			<i class="icon-shopping-cart icon-2x list-item-icon"></i>
+		</section>
+		<section class="span11">
+			<h3 class="list-item-heading">{{name}}</h3>
+			<p class="ui-li-desc list-item-subheading">{{brand}}</p>
+		</section>
+	</li>
 </script>
 
 <!-- New recipe screen -->
 <script id="newRecipeView" type="text/html">
-	<form action="#addRecipe" method="post">
+	<form action="#saveRecipe" method="post">
 		<fieldset>
 			<legend>Add a new recipe:</legend>
 			<div class="row">
@@ -42,9 +58,9 @@
 					</div>
 				</section>
 			</div>
-			<section class="ingredients-list-container">
+			<section>
 				<legend class="sub-legend">Ingredients</legend>
-				<ul id="ingredients-list" class="unstyled">
+				<ul id="recipe-ingredient-list" class="unstyled">
 				</ul>
 				<a id="addIngredientToRecipe" class="btn btn-success btn-block btn-large" data-role="none">
 					<i class="icon-plus-sign"></i> Add Another Ingredient</a>
@@ -81,7 +97,7 @@
 </script>
 
 <script id="newIngredientView" type="text/html">
-<form action="#addIngredient" method="post">
+<form action="#saveIngredient" method="post">
 		<fieldset>
 			<legend>Add a new ingredient:</legend>
 			<div class="row">
@@ -91,9 +107,9 @@
 					</div>
 				</section>
 				<section class="inline-form-content span10">
-					<input name="name" class="input-xlarge" type="text" placeholder="Name" data-role="none"/>
+					<input name="ingredient.name" class="input-xlarge" type="text" placeholder="Name" data-role="none"/>
 					<br>
-					<input class="input-xlarge" type="text" placeholder="Store brand" data-role="none"/>
+					<input name="ingredient.brand" class="input-xlarge" type="text" placeholder="Store brand" data-role="none"/>
 					<span class="help-inline form-optional"><em>Optional</em></span>
 				</section>
 			</div>
@@ -129,16 +145,16 @@
 	<li>
 		<h4>Convert {{convertFrom}} to {{convertTo}}:</h4>
 		<div class="conversion-container">
-			<input name="conversions[{{id}}].convertFromAmount" class="input-small" type="number" data-role="none"/>
+			<input name="ingredient.conversions[{{id}}].convertFromAmount" class="input-small" type="number" data-role="none"/>
 			<div class="inline-jqm-list input-large">
-				<select id="fromUnits" name="conversions[{{id}}].convertFromUnits">
+				<select id="fromUnits" name="ingredient.conversions[{{id}}].convertFromUnits">
 					<option disabled selected value="">Select</option>
 				</select>
 			</div>
 			<span><i class="icon-exchange icon-2x"></i></span>
-			<input name="conversions[{{id}}].convertToAmount" class="input-small" type="number" data-role="none" />
+			<input name="ingredient.conversions[{{id}}].convertToAmount" class="input-small" type="number" data-role="none" />
 			<div class="inline-jqm-list input-large">
-				<select id="toUnits" name="conversions[{{id}}].convertToUnits">
+				<select id="toUnits" name="ingredient.conversions[{{id}}].convertToUnits">
 					<option disabled selected value="">Select</option>
 				</select>
 			</div>

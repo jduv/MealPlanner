@@ -1,19 +1,19 @@
 // Some basic SPA functions that don't really belong anywhere.
-var ui = (function() {
+var ui = (function () {
 
 	// Creates dom nodes from an array of arguments and some selector functions. Mainly used
 	// when creating form elements like <option></option> under a select, or checkboxes.
-	var thingify = function(args, creator) {
+	var thingify = function (args, creator) {
 		args = {
 				items : args.items || [],
-				textSelector : args.textSelector || function() {},
-				valueSelector : args.valueSelector || function() {},
-				idSelector : args.idSelector || function() {},
-				nameSelector : args.nameSelector || function() {}
+				textSelector : args.textSelector || function () {},
+				valueSelector : args.valueSelector || function () {},
+				idSelector : args.idSelector || function () {},
+				nameSelector : args.nameSelector || function () {}
 		};
 
 		var items = [];
-		_.forEach(args.items, function(value, key, collection) {
+		_.forEach(args.items, function (value, key, collection) {
 			items.push(creator(key, value, args));
 		})
 
@@ -21,21 +21,30 @@ var ui = (function() {
 	}
 
 	return {
-		showModalError : function(body)
+		showModalError : function (body)
 		{
-			var element = $('#error-modal');
-			$('#error-modal-msg', element).html(body);
-			element.modal('show');
+			var modal = $('#error-modal');
+			$('#error-modal-msg', modal).html(body);
+			modal.modal('show');
+			return modal;
 		},
-		showModalLoading : function() {
-			// Loading modals currently only work in Chrome
-			//$('#loading-modal').modal('show');
+		showModalLoading : function () {
+			// var modal = $('#loading-modal');
+			// modal.modal('show');
+			// return modal;
 		},
-		hideModalLoading : function() {
-			// Loading modals currently only work in Chrome
-			//$('#loading-modal').modal('hide');
+		hideModalLoading : function () {
+			// var modal = $('#loading-modal');
+			// modal.modal('hide');
+			// return modal;
 		},
-		checkboxify : function(args) {			
+		showModalSuccess : function (body) {
+			var modal = $("success-modal");
+			$('#success-modal-msg', modal).html(body);
+			modal.modal('show');
+			return modal;
+		},
+		checkboxify : function (args) {			
 			return thingify(args, function (index, item, options) {
 				var label = $('<label></label>')
 				.addClass('label-checkbox');
@@ -50,8 +59,8 @@ var ui = (function() {
 				return label;
 			});
 		},
-		optionify : function(args) {
-			return thingify(args, function(index, item, options) {
+		optionify : function (args) {
+			return thingify(args, function (index, item, options) {
 				return $('<option></option>')
 				.attr('value', options.valueSelector(item))
 				.append(options.textSelector(item));
@@ -63,24 +72,21 @@ var ui = (function() {
 // Top level object. Creates controllers and such.
 var eatfresh = (function () {
 	var facade = {
-		newRecipeViewController : function() {
+		newRecipeController : function () {
 			var ingredientCount = 0;
 			var view = ich.newRecipeView();
 
 			var controller = {
 				addIngredientToView : function () {
-					if(view)
-					{
-						var ingredient = ich.newIngredient({ id : ingredientCount });
-						$('#ingredients-list', view).append(ingredient).trigger('create');
+					var ingredient = ich.newIngredient({ id : ingredientCount });
+					$('#recipe-ingredient-list', view).append(ingredient).trigger('create');
 
-						// If we're not adding the first ingredient...
-						if(ingredientCount > 0) {
-							ingredient.hide();
-							ingredient.slideDown('fast');
-						}
-						ingredientCount++;
+					// If we're not adding the first ingredient...
+					if(ingredientCount > 0) {
+						ingredient.hide();
+						ingredient.slideDown('fast');
 					}
+					ingredientCount++;
 				},
 				// match the other load-view calls, even though the callback is unused.
 				loadView : function (callback) {
@@ -89,30 +95,35 @@ var eatfresh = (function () {
 			};
 
 			// Wire up stuff.
-			$('#addIngredientToRecipe', view).unbind('click').click(function() { controller.addIngredientToView() });
+			$('#addIngredientToRecipe', view).unbind('click').click(function () { controller.addIngredientToView() });
 			controller.addIngredientToView(); // add the first ingredient.
 			return controller;
 		},
-		newIngredientViewController : function() {
+		newIngredientController : function () {
 			var view = ich.newIngredientView();
 			var measurementTypesElement = $('#measurement-types', view);
 			var conversionsList = $('#conversions-list', view);
 			var ingredient = Parse.Object.extend('Ingredient');
 			var measurementTypes = {};
 
+			// Parse objects
+			var Conversion = Parse.Object.extend('Conversion');
+			var UnitType = Parse.Object.extend('UnitType');
+			var MeasurementType = Parse.Object.extend('MeasurementType');
+			var Ingredient = Parse.Object.extend('Ingredient');
+
 			// utility function for loading required static data.
-			function loadMeasurementData(success) {
-				var MeasurementType = Parse.Object.extend('MeasurementType');
+			function loadMeasurementData (success) {
 				var query = new Parse.Query(MeasurementType);
 				query.ascending('name');
 				query.find({ 
-					success : function(data) {
+					success : function (data) {
 						for(var i = 0; i < data.length; i++) {
 							measurementTypes[data[i].id] = data[i];
 						}
 						loadUnitTypes(success);
 					},
-					error : function(error) {
+					error : function (error) {
 						ui.hideModalLoading();
 						ui.showModalError('Unable to fetch required data. Error: ' + error.message);
 					}
@@ -121,11 +132,10 @@ var eatfresh = (function () {
 			}
 
 			// utility function for loading unit types
-			function loadUnitTypes(success) {
-				var UnitType = Parse.Object.extend('UnitType');
+			function loadUnitTypes (success) {
 				var query = new Parse.Query(UnitType);
 				query.find({
-					success : function(data) {
+					success : function (data) {
 						for(var i = 0; i < data.length; i++)
 						{
 							var mType = measurementTypes[data[i].get('measurementType').id];
@@ -139,7 +149,7 @@ var eatfresh = (function () {
 						}
 						success()
 					},
-					error : function(error) {
+					error : function (error) {
 						ui.hideModalLoading();
 						ui.showModalError('Unable to fetch required data. Error: ' + error.message);
 					}
@@ -147,7 +157,7 @@ var eatfresh = (function () {
 			}
 
 			// Handles all those nasty conversion type menus.
-			function handleConversions() {
+			function handleConversions () {
 				var checked = $('input:checked', measurementTypesElement);
 				var viewGenerator = createConversionViewGenerator();
 
@@ -192,7 +202,7 @@ var eatfresh = (function () {
 			}
 
 			// This closure maintains state for the conversion views.
-			var createConversionViewGenerator = function() {
+			var createConversionViewGenerator = function () {
 				var id = 0;
 
 				// Tells optionify where the text for a unit type is
@@ -206,7 +216,7 @@ var eatfresh = (function () {
 				}
 
 				return {
-					generateConversionView : function(convertFrom, convertTo) {
+					generateConversionView : function (convertFrom, convertTo) {
 						var view;
 						if(convertFrom && convertTo) {
 							view = ich.conversionView({ 
@@ -236,23 +246,57 @@ var eatfresh = (function () {
 						return view;
 					}
 				}
-
 			};
+
+			var saveChildren = function (jsonFormData, ingredient, callback) {
+				// Create conversions
+				if(jsonFormData.conversions) {
+					// Execute this when all our conversions have saved.
+					var done = _.after(jsonFormData.conversions.length, callback);
+					var conversionRel = ingredient.relation("conversions");
+					_.forEach(jsonFormData.conversions, function (toBuild) {
+						toSave = buildConversion(toBuild);
+						toSave.save(null, {
+							success : function (data) {
+								conversionRel.add(data);
+								done();
+							},
+							error : function (error) { ui.showModalError('Unable to save the conversion. Error: ' + error.message) }
+						});
+					})
+				}
+			}
+
+			var buildConversion = function (currentItem, parent) {
+				var fromUnits = new UnitType();
+				var toUnits = new UnitType();
+				fromUnits.id = currentItem.convertFromUnits;
+				toUnits.id = currentItem.convertToUnits;
+
+				// Build the conversion object
+				conversion = new Conversion();
+				conversion.set('fromAmount', currentItem.convertFromAmount);
+				conversion.set('toAmount', currentItem.convertToAmount);
+				conversion.set('fromUnits', fromUnits);
+				conversion.set('toUnits', toUnits);
+
+				return conversion;
+			}
 
 			// Create the controller.
 			var controller =  {
-				loadView : function(callback) {
+				loadView : function (callback) {
 					ui.showModalLoading();
-					loadMeasurementData(function() {
+					loadMeasurementData(function () {
 						var list = ui.checkboxify({
 							items : measurementTypes,
-							textSelector : function(measurementType) {
+							textSelector : function (measurementType) {
 								return measurementType.get('name');
 							},
-							valueSelector : function(measurementType) {
+							valueSelector : function (measurementType) {
 								return measurementType.id;
 							},
-							nameSelector : function(measurementType) {
+							nameSelector : function (measurementType) {
 								return 'ingredient.supportedMeasurementTypes[]';
 							}
 						});
@@ -262,8 +306,66 @@ var eatfresh = (function () {
 						ui.hideModalLoading();
 						callback(view);
 					});
+				},
+				saveIngredient : function (jsonFormData, callback) {
+					var toSave = new Ingredient();
+					toSave.set('name', jsonFormData.name);
+
+					if(jsonFormData.brand) {
+						toSave.set('brand', jsonFormData.brand);
+					}
+
+					// Create measurement type relationships.
+					var supportedMeasurementTypesRel = toSave.relation("supportedMeasurementTypes");
+					for(var i = 0; i < jsonFormData.supportedMeasurementTypes.length; i++)
+					{
+						var measurementType = measurementTypes[jsonFormData.supportedMeasurementTypes[i]];
+						if(measurementType) {
+							supportedMeasurementTypesRel.add(measurementType);
+						}
+					}
+
+					// Handle child objects, save the main object, then return.
+					saveChildren(jsonFormData, toSave, function () {
+						toSave.save(null, {
+							success : function (data) {
+								callback();
+							},
+							error : function (error) { ui.showModalError('Unable to save the ingredient. Error: ' + error.message) }
+						});
+					});
+
+					
 				}
 			}
+
+			return controller;
+		},
+		newIngredientListController : function () {
+			var view = ich.ingredientListView();
+			var ingredientList = $('#ingredient-list-view', view);
+
+			var controller = {
+				loadView : function (callback) {
+					var Ingredient = Parse.Object.extend('Ingredient');
+					var query = new Parse.Query(Ingredient);
+					query.ascending('name');
+					query.find({
+						success : function (data) {
+							for(var i = 0; i < data.length; i++) {
+								var ingredient = ich.ingredientListItem({
+									name : data[i].get('name'),
+									brand : data[i].get('brand')
+								});
+								ingredientList.append(ingredient);
+							}
+
+							callback(view);
+						},
+						error : function (error) { ui.showModalError('Unable to fetch the ingredients list. Error: ' + error.message) }
+					});
+				}
+			};
 
 			return controller;
 		}

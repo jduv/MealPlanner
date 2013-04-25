@@ -1,6 +1,6 @@
 #app {
 	margin-top: 60px;
-	margin-bottom: 30px;
+	margin-bottom: 40px;
 	min-width: 700px;
 }
 
@@ -33,6 +33,12 @@
 	position: relative;
 	top: 5px;
 	right: 5px;
+}
+
+ul.nav li a span {
+	display: inline-block;
+	margin-top: 6px;
+	color: #a90329; ;
 }
 
 .btn-header-container-right {
@@ -87,6 +93,18 @@
 	background-repeat: repeat-x;
 	border-color: #6d0019 #6d0019 #a90329;
 	border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a90329',endColorstr='#6d0019',GradientType=0);
+	filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.gradient-red {
+	background-color: #ff2223;
+	background-image: -moz-linear-gradient(top,#a90329,#6d0019);
+	background-image: -webkit-gradient(linear,0 0,0 100%,from(#a90329),to(#6d0019));
+	background-image: -webkit-linear-gradient(top,#a90329,#6d0019);
+	background-image: -o-linear-gradient(top,#a90329,#6d0019);
+	background-image: linear-gradient(to bottom,#a90329,#6d0019);
+	background-repeat: repeat-x;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a90329',endColorstr='#6d0019',GradientType=0);
 	filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
@@ -209,4 +227,45 @@
 #conversions-list li {
 	margin-bottom: 20px;
 	margin-left: 15px;
+}
+
+.list-item-icon {
+	margin-top: 10px;
+	margin-left: 20px;
+	border: 0.1em solid #999;
+	border-radius: 10px;
+	padding: 5px;
+}
+
+.list-item-heading {
+	margin-top: 5px;
+}
+
+.list-item-subheading {
+	margin-top: -20px;
+	margin-left: 3px;
+	color: #999;
+}
+
+.ui-li-divider {
+	color: #fff;
+	background-color: #ff2223;
+	background-image: -moz-linear-gradient(top,#a90329,#6d0019);
+	background-image: -webkit-gradient(linear,0 0,0 100%,from(#a90329),to(#6d0019));
+	background-image: -webkit-linear-gradient(top,#a90329,#6d0019);
+	background-image: -o-linear-gradient(top,#a90329,#6d0019);
+	background-image: linear-gradient(to bottom,#a90329,#6d0019);
+	background-repeat: repeat-x;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a90329',endColorstr='#6d0019',GradientType=0);
+	filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.ingredient-list-view-container {
+	margin-top: 2px;
+	margin-left: -19px;
+	margin-right: -19px;
+}
+
+#ingredient-list-view {
+	width: 100%;
 }
