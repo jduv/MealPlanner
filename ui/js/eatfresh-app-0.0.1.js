@@ -6,8 +6,8 @@ var ui = (function () {
 	var thingify = function (args, creator) {
 		args = {
 				items : args.items || [],
-				textSelector : args.textSelector || function () {},
-				valueSelector : args.valueSelector || function () {},
+				textSelector : args.textSelector || function (item) { return item },
+				valueSelector : args.valueSelector || function (item) {},
 				idSelector : args.idSelector || function () {},
 				nameSelector : args.nameSelector || function () {}
 		};
@@ -71,15 +71,191 @@ var ui = (function () {
 
 // Top level object. Creates controllers and such.
 var eatfresh = (function () {
+
+	// Static Parse objects
+	var Conversion = Parse.Object.extend('Conversion');
+	var UnitType = Parse.Object.extend('UnitType');
+	var MeasurementType = Parse.Object.extend('MeasurementType');
+	var Ingredient = Parse.Object.extend('Ingredient');
+	var Recipe = Parse.Object.extend('Recipe');
+
+	// utility function for loading required static data.
+	function loadMeasurementData (success) {
+		var measurementTypes = {};
+		var query = new Parse.Query(MeasurementType);
+		query.ascending('name');
+		query.find({ 
+			success : function (data) {
+				for(var i = 0; i < data.length; i++) {
+					measurementTypes[data[i].id] = data[i];
+				}
+				loadUnitTypes(measurementTypes, success);
+			},
+			error : function (error) {
+				ui.hideModalLoading();
+				ui.showModalError('Unable to fetch required data. Error: ' + error.message);
+			}
+		});
+
+	}
+
+	// utility function for loading unit types
+	function loadUnitTypes (measurementTypes, success) {
+		var query = new Parse.Query(UnitType);
+		query.find({
+			success : function (data) {
+				for(var i = 0; i < data.length; i++)
+				{
+					var mType = measurementTypes[data[i].get('measurementType').id];
+					if(mType)
+					{
+						if(typeof mType.unitTypes == 'undefined') {
+							mType.unitTypes = [];
+						}
+						mType['unitTypes'].push(data[i]);
+					}
+				}
+				success(measurementTypes);
+			},
+			error : function (error) {
+				ui.hideModalLoading();
+				ui.showModalError('Unable to fetch required data. Error: ' + error.message);
+			}
+		})
+	}
+
+	function unitTypeTextSelector(item) {
+		return item.get('name');
+	}
+
+	function unitTypeValueSelector(item) {
+		return item.id;
+	}
+
+	function measurementTypeTextSelector(item) {
+		return item.get('name');
+	}
+
+	function measurementTypeValueSelector(item) {
+		return item.id;
+	}
+
+	// The facade
 	var facade = {
 		newRecipeController : function () {
 			var ingredientCount = 0;
 			var view = ich.newRecipeView();
+			var ingredients;
+			var ingredientNames;
+			var measurementTypes;
+
+			// configure the type-ahead
+			var wireAutoComplete = function (counter)
+			{
+				$('#ingredient-autocomplete-' + ingredientCount, view)
+				.typeahead({ 
+					source : function (query, process) { return ingredients; },
+					matcher : function(item) { 
+						var itemName = item.get('name');
+					 	return ~itemName.toLowerCase().indexOf(this.query.toLowerCase()) 
+					},
+					sorter : function(items) {
+						var beginswith = []
+						, caseSensitive = []
+						, caseInsensitive = []
+						, item;
+
+						var itemName;
+						while (item = items.shift()) {
+							itemName = item.get('name');
+					        if (!itemName.toLowerCase().indexOf(this.query.toLowerCase())) {
+					        	beginswith.push(item);
+					        }
+					        else if (~itemName.indexOf(this.query)) { 
+					        	caseSensitive.push(item);
+					        }
+					        else { 
+					        	caseInsensitive.push(item);
+					        }
+				      	}
+
+				      return beginswith.concat(caseSensitive, caseInsensitive)
+					},
+					updater : function(item) { 
+						var ingredientId = $('#ingredient-id-' + counter, view);
+						var measurementSelect = $('#ingredient-measurements-' + counter, view);
+						var id = item.attr('id');
+						var ingredient = _.find(ingredients, { 'id' : id });
+						var supportedMeasurementTypes = _.map(ingredient.get('supportedMeasurementTypes'), function(item) {
+							return measurementTypes[item];
+						});
+
+						// set id.
+						ingredientId.val(ingredient.id);
+
+						// build measurements list.
+						var list = ui.optionify({
+							items : supportedMeasurementTypes,
+							valueSelector : measurementTypeValueSelector,
+							textSelector : measurementTypeTextSelector
+						});
+
+						var defaultOption = $('option', measurementSelect);
+						measurementSelect.html('');
+						measurementSelect.append(defaultOption);
+						measurementSelect.append(list);
+
+						// bind to change event
+						measurementSelect.change(function () {
+							var selectedOption = $(':selected', measurementSelect);
+							var unitTypesSelect = $('#ingredient-units-' + counter);
+							$('#ingredient-amount-' + counter).removeAttr('disabled');
+
+							// populate 
+							var measurementType = measurementTypes[selectedOption.val()];
+							if(measurementType) {
+								var list = ui.optionify({
+									items : measurementType.unitTypes,
+									valueSelector : unitTypeValueSelector,
+									textSelector : unitTypeTextSelector
+								});
+
+								var defaultOption = $('option[value="default"]', unitTypesSelect);
+								unitTypesSelect.html('');
+								unitTypesSelect.append(defaultOption);
+								unitTypesSelect.append(list);
+								unitTypesSelect.selectmenu('enable');
+								unitTypesSelect.selectmenu('refresh');
+							}
+						});
+
+						// tell jquery mobile to refresh itself.
+						measurementSelect.selectmenu('enable');
+						measurementSelect.selectmenu('refresh');
+						return item.attr('data-value'); 
+					},
+					highlighter : function(item) {
+						var itemName = item.get('name');
+						var query = this.query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&')
+						return itemName.replace(
+					      	new RegExp('(' + query + ')', 'ig'), function ($1, match) {
+					        	return '<strong>' + match + '</strong>';
+				      	});
+					},
+					itemRenderer : function(template, item) {
+						return template.attr('data-value', item.get('name')).attr('id', item.id);
+					},
+					items : 10,
+					minLength : 2,
+				});
+			}
 
 			var controller = {
 				addIngredientToView : function () {
 					var ingredient = ich.newIngredient({ id : ingredientCount });
 					$('#recipe-ingredient-list', view).append(ingredient).trigger('create');
+
+					wireAutoComplete(ingredientCount);
 
 					// If we're not adding the first ingredient...
 					if(ingredientCount > 0) {
@@ -88,9 +264,34 @@ var eatfresh = (function () {
 					}
 					ingredientCount++;
 				},
+				saveRecipe : function (jsonFormData, callback) {
+					var recipe = new Recipe();
+					recipe.set('name', jsonFormData.name);
+					recipe.set('servingSize', jsonFormData.servingSize);
+					recipe.set('directions', jsonFormData.directions);
+					recipe.save(null, {
+						success : callback,
+						error : function(error) { ui.showModalError('Unable to save the recipe. Error: ' + error.message) }
+					});
+				},
 				// match the other load-view calls, even though the callback is unused.
 				loadView : function (callback) {
-					callback(view);
+					// fetch all the ingredient names for the auto-completes
+					var query = new Parse.Query(Ingredient);
+					query.ascending('name');
+					query.find({
+						success : function (data) {
+							ingredients = data;
+							ingredientNames = _.map(data, function (item) { return item.get('name') });
+						},
+						error : function(error) { ui.showModalError('Unable to fetch required data. Error: ' + error.message) }
+					})
+
+					// fetch measurement types
+					loadMeasurementData(function (data) {
+						measurementTypes = data;
+						callback(view);
+					})
 				}
 			};
 
@@ -104,57 +305,42 @@ var eatfresh = (function () {
 			var measurementTypesElement = $('#measurement-types', view);
 			var conversionsList = $('#conversions-list', view);
 			var ingredient = Parse.Object.extend('Ingredient');
-			var measurementTypes = {};
+			var measurementTypes;
 
-			// Parse objects
-			var Conversion = Parse.Object.extend('Conversion');
-			var UnitType = Parse.Object.extend('UnitType');
-			var MeasurementType = Parse.Object.extend('MeasurementType');
-			var Ingredient = Parse.Object.extend('Ingredient');
+			// This closure maintains state for the conversion views.
+			var createConversionViewGenerator = function () {
+				var id = 0;
 
-			// utility function for loading required static data.
-			function loadMeasurementData (success) {
-				var query = new Parse.Query(MeasurementType);
-				query.ascending('name');
-				query.find({ 
-					success : function (data) {
-						for(var i = 0; i < data.length; i++) {
-							measurementTypes[data[i].id] = data[i];
+				return {
+					generateConversionView : function (convertFrom, convertTo) {
+						var view;
+						if(convertFrom && convertTo) {
+							view = ich.conversionView({ 
+										id : id,
+										convertFrom : convertFrom.get('name'), 
+										convertTo : convertTo.get('name')
+									});
+
+							$('#fromUnits', view).append(
+								ui.optionify({
+									items : convertFrom.unitTypes,
+									textSelector : unitTypeTextSelector,
+									valueSelector : unitTypeValueSelector
+								}));
+
+							$('#toUnits', view).append(
+								ui.optionify({
+									items : convertTo.unitTypes,
+									textSelector : unitTypeTextSelector,
+									valueSelector : unitTypeValueSelector
+								}))
 						}
-						loadUnitTypes(success);
-					},
-					error : function (error) {
-						ui.hideModalLoading();
-						ui.showModalError('Unable to fetch required data. Error: ' + error.message);
-					}
-				});
 
-			}
-
-			// utility function for loading unit types
-			function loadUnitTypes (success) {
-				var query = new Parse.Query(UnitType);
-				query.find({
-					success : function (data) {
-						for(var i = 0; i < data.length; i++)
-						{
-							var mType = measurementTypes[data[i].get('measurementType').id];
-							if(mType)
-							{
-								if(typeof mType.unitTypes == 'undefined') {
-									mType.unitTypes = [];
-								}
-								mType['unitTypes'].push(data[i]);
-							}
-						}
-						success()
-					},
-					error : function (error) {
-						ui.hideModalLoading();
-						ui.showModalError('Unable to fetch required data. Error: ' + error.message);
+						id++; // increment count.
+						return view;
 					}
-				})
-			}
+				}
+			};
 
 			// Handles all those nasty conversion type menus.
 			function handleConversions () {
@@ -201,53 +387,6 @@ var eatfresh = (function () {
 				}
 			}
 
-			// This closure maintains state for the conversion views.
-			var createConversionViewGenerator = function () {
-				var id = 0;
-
-				// Tells optionify where the text for a unit type is
-				function unitTypeTextSelector(item) {
-					return item.get('name');
-				}
-
-				// Tells optionify where the value for a unit type is.
-				function unitTypeValueSelector(item) {
-					return item.id;
-				}
-
-				return {
-					generateConversionView : function (convertFrom, convertTo) {
-						var view;
-						if(convertFrom && convertTo) {
-							view = ich.conversionView({ 
-										id : id,
-										convertFrom : convertFrom.get('name'), 
-										convertTo : convertTo.get('name')
-									});
-
-							$('#fromUnits', view).append(
-								ui.optionify({
-									id : id,
-									items : convertFrom.unitTypes,
-									textSelector : unitTypeTextSelector,
-									valueSelector : unitTypeValueSelector
-								}));
-
-							$('#toUnits', view).append(
-								ui.optionify({
-									id : id,
-									items : convertTo.unitTypes,
-									textSelector : unitTypeTextSelector,
-									valueSelector : unitTypeValueSelector
-								}))
-						}
-
-						id++; // increment count.
-						return view;
-					}
-				}
-			};
-
 			var saveChildren = function (jsonFormData, ingredient, callback) {
 				// Create conversions
 				if(jsonFormData.conversions) {
@@ -264,6 +403,8 @@ var eatfresh = (function () {
 							error : function (error) { ui.showModalError('Unable to save the conversion. Error: ' + error.message) }
 						});
 					})
+				} else {
+					callback();
 				}
 			}
 
@@ -287,7 +428,9 @@ var eatfresh = (function () {
 			var controller =  {
 				loadView : function (callback) {
 					ui.showModalLoading();
-					loadMeasurementData(function () {
+					loadMeasurementData(function (data) {
+						// Assign to module level variable.
+						measurementTypes = data;
 						var list = ui.checkboxify({
 							items : measurementTypes,
 							textSelector : function (measurementType) {
@@ -316,14 +459,16 @@ var eatfresh = (function () {
 					}
 
 					// Create measurement type relationships.
-					var supportedMeasurementTypesRel = toSave.relation("supportedMeasurementTypes");
+					var supportedMeasurementTypes = [];
 					for(var i = 0; i < jsonFormData.supportedMeasurementTypes.length; i++)
 					{
 						var measurementType = measurementTypes[jsonFormData.supportedMeasurementTypes[i]];
 						if(measurementType) {
-							supportedMeasurementTypesRel.add(measurementType);
+							supportedMeasurementTypes.push(measurementType.id);
 						}
 					}
+
+					toSave.set('supportedMeasurementTypes', supportedMeasurementTypes);
 
 					// Handle child objects, save the main object, then return.
 					saveChildren(jsonFormData, toSave, function () {
@@ -334,8 +479,6 @@ var eatfresh = (function () {
 							error : function (error) { ui.showModalError('Unable to save the ingredient. Error: ' + error.message) }
 						});
 					});
-
-					
 				}
 			}
 
@@ -345,7 +488,7 @@ var eatfresh = (function () {
 			var view = ich.ingredientListView();
 			var ingredientList = $('#ingredient-list-view', view);
 
-			var controller = {
+			return {
 				loadView : function (callback) {
 					var Ingredient = Parse.Object.extend('Ingredient');
 					var query = new Parse.Query(Ingredient);
@@ -363,6 +506,34 @@ var eatfresh = (function () {
 							callback(view);
 						},
 						error : function (error) { ui.showModalError('Unable to fetch the ingredients list. Error: ' + error.message) }
+					});
+				}
+			};
+
+			return controller;
+		},
+		newRecipeListController : function () {
+			var view = ich.recipeListView();
+			var recipeList = $('#recipe-list-view', view);
+
+			return {
+				loadView : function (callback) {
+					var Recipe = Parse.Object.extend('Recipe');
+					var query = new Parse.Query(Recipe);
+					query.ascending('name');
+					query.find({
+						success : function (data) {
+							for(var i = 0; i < data.length; i++) {
+								var recipe = ich.recipeListItem({
+									name : data[i].get('name'),
+									servingSize : data[i].get('servingSize')
+								});
+								recipeList.append(recipe);
+							}
+
+							callback(view);
+						},
+						error : function (error) { ui.showModalError('Unable to fetch the recipe list. Error: ' + error.message) }
 					});
 				}
 			};

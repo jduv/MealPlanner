@@ -192,7 +192,7 @@ ul.nav li a span {
 .inline-jqm-list {
 	position: relative;
 	display: inline-block;
-	margin: 3px 7px;
+	margin: 3px 5px;
 	top: -5px;
 }
 
@@ -260,7 +260,7 @@ ul.nav li a span {
 	filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
 
-.ingredient-list-view-container {
+.list-view-container {
 	margin-top: 2px;
 	margin-left: -19px;
 	margin-right: -19px;

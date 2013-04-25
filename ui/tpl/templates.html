@@ -1,30 +1,44 @@
-<!-- This is the recipes screen -->
-<script id="recipeListView" type="text/html">
-	<h2>Hello from recipes</h2>
-	<div>This is my test</div>
-</script>
-
 <!-- Planner screen -->
 <script id="plannerView" type="text/html">
-	<h2>Hello from planner</h2>
-	<div>This is my test</div>
+	<h2>Broken :(</h2>
+</script>
+
+<!-- Recipes list view -->
+<script id="recipeListView" type="text/html">
+	<div class="list-view-container">
+		<ul id="recipe-list-view" class="unstyled" data-role="listview" data-autodividers="true">
+		</ul>
+	<div>
+</script>
+
+<!-- Recipe list item -->
+<script id="recipeListItem" type="text/html">
+	<li class="row">
+		<section class="span1">
+			<i class="icon-file-alt icon-2x list-item-icon"></i>
+		</section>
+		<section class="span4">
+			<h3 class="list-item-heading">{{name}}</h3>
+			<p class="ui-li-desc list-item-subheading">Serving size: {{servingSize}}</p>
+		</section>
+	</li>
 </script>
 
 <!-- Ingredient list view -->
 <script id="ingredientListView" type="text/html">
-	<div class="ingredient-list-view-container">
+	<div class="list-view-container">
 		<ul id="ingredient-list-view" class="unstyled" data-role="listview" data-autodividers="true">
 		</ul>
 	<div>
 </script>
 
-<!-- Template for an ingredient on the list -->
+<!-- Ingredient list item -->
 <script id="ingredientListItem" type="text/html">
 	<li class="row">
 		<section class="span1">
 			<i class="icon-shopping-cart icon-2x list-item-icon"></i>
 		</section>
-		<section class="span11">
+		<section class="span4">
 			<h3 class="list-item-heading">{{name}}</h3>
 			<p class="ui-li-desc list-item-subheading">{{brand}}</p>
 		</section>
@@ -77,19 +91,20 @@
 <script id="newIngredient" type="text/html">
 	<li id="ingredient-{{id}}">
 		<i class="icon-check icon-2x"></i>
-		<span id="ingredient-autocomplete-{{id}}" class="ingredient-autocomplete">
-			<input id="ingredientName{{id}}" name="ingredients[{{id}}].ingredient.name" class="input-large" type="text" placeholder="Add ingredient... (start typing)" data-role="none"/> 
+		<span class="ingredient-autocomplete">
+			<input id="ingredient-autocomplete-{{id}}" class="input-large typeahead" type="text" placeholder="Add ingredient... (start typing)" data-role="none"/> 
+			<input id="ingredient-id-{{id}}" name="ingredients[{{id}}].id" type="hidden" />
 		</span>
-		<span id="ingredient-measurements-{{id}}">
+		<span>
 			<div class="input-large inline-jqm-list">
-				<select name="ingredients[{{id}}].measurement" disabled>
-					<option>Measurement</option>
+				<select id="ingredient-measurements-{{id}}" name="ingredients[{{id}}].measurement" disabled>
+					<option disabled value="default">Measurement</option>
 				</select>
 			</div>
-			<input name="ingredients[{{id}}].amount" class="input-small" type="number" min="0" placeholder="Amount" data-role="none" disabled/>
+			<input id="ingredient-amount-{{id}}" name="ingredients[{{id}}].amount" class="input-small" type="number" min="0" placeholder="Amount" data-role="none" disabled/>
 			<div class="input-medium inline-jqm-list">
-				<select name="ingredient[{{id}}.units" disabled>
-					<option>Units</option>
+				<select id="ingredient-units-{{id}}" name="ingredients[{{id}}].units" disabled>
+					<option disabled value="default">Units</option>
 				</select>
 			</div>
 		</span>
@@ -148,14 +163,14 @@
 			<input name="ingredient.conversions[{{id}}].convertFromAmount" class="input-small" type="number" data-role="none"/>
 			<div class="inline-jqm-list input-large">
 				<select id="fromUnits" name="ingredient.conversions[{{id}}].convertFromUnits">
-					<option disabled selected value="">Select</option>
+					<option disabled selected value="default">Select</option>
 				</select>
 			</div>
 			<span><i class="icon-exchange icon-2x"></i></span>
 			<input name="ingredient.conversions[{{id}}].convertToAmount" class="input-small" type="number" data-role="none" />
 			<div class="inline-jqm-list input-large">
 				<select id="toUnits" name="ingredient.conversions[{{id}}].convertToUnits">
-					<option disabled selected value="">Select</option>
+					<option disabled selected value="default">Select</option>
 				</select>
 			</div>
 		</div>

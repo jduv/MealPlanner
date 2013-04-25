@@ -60,16 +60,23 @@
        		});
 		};
 
+		var loadRecipesView = function (context) {
+			recipeListController = eatfresh.newRecipeListController();
+	     	recipeListController.loadView(function(view) {
+	     		context.app.swap(view);
+	     	})
+		}
+
 		// Home screen. Default to recipe view with some tweaks
 		this.get('#boot', function (context) {
-			$('#app').html(ich.recipeView());
+			loadRecipesView(context);
 			$('#nav-recipes').addClass('active');
 			$('#add-recipe-btn').prop('href', '#newRecipeView').fadeIn(fadeInTime);
 		});
 
 		// Recipe view.
 	     this.get('#recipesView', function (context) {
-	     	context.app.swap(ich.recipeListView());
+	     	loadRecipesView(context);
 	     	$('#nav-recipes').addClass('active');
 	     	$('#add-recipe-btn').prop('href', '#newRecipeView').fadeIn(fadeInTime);
 	     	$('#btn-back').fadeOut('fast');	
@@ -122,7 +129,10 @@
 	     this.post('#saveRecipe', function (context) {
 	     	var formData = $(context.target).toObject();
 	     	if(recipeController) {
-	     		// TODO: Implement recipe save.
+	     		recipeController.saveRecipe(formData.recipe, function() {
+	     			console.log('Successfully saved object: ' + JSON.stringify(formData));
+	     			context.redirect('#recipesView');
+	     		})
 	     	} else {
 	     		ui.showModalError("A fatal error occurred! Unable to continue. Error: No controller available.");
 	     		// Try to fix it by routing the user to a place where the appropriate controller is created.
