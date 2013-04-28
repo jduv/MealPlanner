@@ -58,7 +58,7 @@
 	       			callback.apply();
 	       		}
        		});
-		};
+		}
 
 		var loadRecipesView = function (context) {
 			recipeListController = eatfresh.newRecipeListController();
@@ -71,7 +71,7 @@
 		this.get('#signin', function (context) {
 			$('#navbar').hide();
 			context.app.swap(ich.signinView());
-		});
+		})
 
 		this.get('#signup', function(context) {
 			$('#navbar').hide();
@@ -85,7 +85,7 @@
 			loadRecipesView(context);
 			$('#navbar').fadeIn(fadeTime);
 			$('#add-item-btn').prop('href', '#newRecipeView').fadeIn(fadeTime);
-		});
+		})
 
 		// Recipe view.
 	     this.get('#recipesView', function (context) {
@@ -93,7 +93,7 @@
 	     	loadRecipesView(context);
 	     	$('#add-item-btn').prop('href', '#newRecipeView').fadeIn(fadeTime);
 	     	$('#btn-back').fadeOut(fadeTime);	
-	     });
+	     })
 
 	     // Ingredients view.
 	     this.get('#ingredientsView', function (context) {
@@ -105,7 +105,7 @@
 	     	$('#nav-ingredients').addClass('active');
 	     	$('#add-item-btn').prop('href', '#newIngredientView').fadeIn(fadeTime);
 	     	$('#btn-back').fadeOut('fast');	
-	     });
+	     })
 
 	     // Planner view
 	     this.get('#plannerView', function (context) {
@@ -125,7 +125,7 @@
 	     	$('.nav li').removeClass('active');
 	     	$('#add-item-btn').fadeOut('fast');
 	     	$('#btn-back').prop('href', '#recipesView').fadeIn(fadeTime);
-	     });
+	     })
 
 	     // New ingredient view
 		 this.get('#newIngredientView', function (context) {
@@ -137,7 +137,7 @@
 	     	$('.nav li').removeClass('active');
 	     	$('#add-item-btn').fadeOut('fast');
 	     	$('#btn-back').prop('href', '#ingredientsView').fadeIn(fadeTime);
-	     });
+	     })
 
 	     this.post('#saveRecipe', function (context) {
 	     	var formData = $(context.target).toObject();
@@ -153,7 +153,7 @@
 	     	}
 
      		console.log(JSON.stringify(formData));
-	     });
+	     })
 
 	     this.post('#saveIngredient', function (context) {
 	     	var formData = $(context.target).toObject();
@@ -167,20 +167,31 @@
 	     		// Try to fix it by routing the user to a place where the appropriate controller is created.
 	     		context.redirect('#ingredientsView');
 	     	}
-	     });
+	     })
 
 	     this.post('#checklogin', function(context) {
-	     	console.log('Inside check login');
-	     	// Check login here.
-	     	context.app.swap(''); // clear screen.
-	     	this.redirect('#boot');
-	     });
+	     	var target = $(context.target);
+	     	var loginBtn = $('#login-btn', target);
+	     	loginBtn.html('<i class="icon-spinner icon-spin"></i> Signing in...');
+
+	     	var formData = target.toObject();
+	     	Parse.User.logIn(formData.email, formData.password, {
+	     		success: function (user) {
+	     			context.redirect('#boot');
+	     		},
+	     		error: function(user, error) {
+	     			loginBtn.html('<i class="icon-signin"></i> Sign in');
+	     			ui.showModalError('Unable to sign in! Error: <br><br>' + error.message, function () {
+	     				$('#password', context.target).val('');
+	     			})
+	     		}
+	     	});
+	     })
 
 	     this.post('#signup', function(context) {
 	     	var target = $(context.target);
-	     	var signUpBtnIcon = $('#sign-up-btn i', target);
-	     	signUpBtnIcon.removeClass('icon-heart');
-	     	signUpBtnIcon.addClass('icon-spinner icon-spin');
+	     	var signupBtn = $('#signup-btn', target);
+	     	signupBtn.html('<i class="icon-spinner icon-spin"></i> Please wait...');
 
 	     	var formData = target.toObject();
 	     	var user = new Parse.User();
@@ -190,15 +201,12 @@
 
 	     	user.signUp(null, {
 	     		success: function (user) {
-	     			signUpBtnIcon.removeClass('icon-spinner icon-spin');
-	     			signUpBtnIcon.addClass('icon-heart');
 	     			ui.showModalSuccess("Account successfully created! Now go sign in!", function () {
 	     				context.redirect('#signin');
 	     			});
 	     		},
 	     		error: function (user, error)  {
-	     			signUpBtnIcon.removeClass('icon-spinner icon-spin');
-	     			signUpBtnIcon.addClass('icon-heart');
+	     			signupBtn.html('<i class="icon-heart"></i> Sign up!');
 	     			ui.showModalError('Unable to sign you up! Error: <br><br>' + error.message, function () {
 	     				$('input', context.target).val('');
 	     			});

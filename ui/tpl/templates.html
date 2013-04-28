@@ -2,21 +2,19 @@
 <script id="signinView" type="text/html">
 	<div class="center-screen-container">
 		<div class="center-screen-container-hdr text-center">
-			<h4> Sign in or sign up! </h4>
+			<h4> Let&apos;s get started... </h4>
 		</div>
 		<div class="center-screen-container-content">
 			<form class="vertical-form" action="#checklogin" method="post">
 			  <div class="control-group">
 			    <div class="controls">
-			      <input type="email" name="email" placeholder="Email" data-role="none" required>
-			      <input type="password" name="password" placeholder="Password" data-role="none" required>
-			    </div>
-			      <label class="checkbox">
-			        <input type="checkbox"> Remember me
-			      </label>
-			      <button type="submit" class="btn btn-block btn-large btn-gradient-red">
+			      <input id="email" type="email" name="email" placeholder="Email" data-role="none" required>
+			      <input id="password" type="password" name="password" placeholder="Password" data-role="none" required>
+			      <button id='login-btn' type="submit" class="btn btn-block btn-large btn-gradient-red">
 			      	<i class="icon-signin"></i> Sign in</button>
+			    </div>
 			  </div>
+			  <p class="text-center"> Don&apos;t have an account? <b>Sign up</b>!</p>
 			  <a class="btn btn-block btn-large btn-success" href="#signup" data-role="none">
 				<i class="icon-heart"></i> Sign up</a>
 			</form>
@@ -33,10 +31,10 @@
 			<form class="vertical-form" action="#signup" method="post">
 				<div class="control-group">
 				    <div class="controls">
-				      <input type="email" name="email" placeholder="Email" data-role="none" required>
-				      <input type="password" name="password" placeholder="Password" data-role="none" required>
-				      <button id="sign-up-btn" type="submit" class="btn btn-block btn-large btn-gradient-red">
-				      	<i class="icon-heart"></i> Sign up!</button>
+				      <input id="email" type="email" name="email" placeholder="Email" data-role="none" required>
+				      <input id="password" type="password" name="password" placeholder="Password" data-role="none" required>
+				      <button id="signup-btn" type="submit" class="btn btn-block btn-large btn-gradient-red">
+				      	<i class="icon-heart"></i> Create my account!</button>
 				    </div>
 			  	</div>
 			  	<a class="btn btn-block btn-large btn-success" href="#signin" data-role="none">
