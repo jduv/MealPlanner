@@ -177,7 +177,12 @@
 	     });
 
 	     this.post('#signup', function(context) {
-	     	var formData = $(context.target).toObject();
+	     	var target = $(context.target);
+	     	var signUpBtnIcon = $('#sign-up-btn i', target);
+	     	signUpBtnIcon.removeClass('icon-heart');
+	     	signUpBtnIcon.addClass('icon-spinner icon-spin');
+
+	     	var formData = target.toObject();
 	     	var user = new Parse.User();
 	     	user.set('username', formData.email);
 	     	user.set('password', formData.password);
@@ -185,11 +190,15 @@
 
 	     	user.signUp(null, {
 	     		success: function (user) {
+	     			signUpBtnIcon.removeClass('icon-spinner icon-spin');
+	     			signUpBtnIcon.addClass('icon-heart');
 	     			ui.showModalSuccess("Account successfully created! Now go sign in!", function () {
 	     				context.redirect('#signin');
 	     			});
 	     		},
 	     		error: function (user, error)  {
+	     			signUpBtnIcon.removeClass('icon-spinner icon-spin');
+	     			signUpBtnIcon.addClass('icon-heart');
 	     			ui.showModalError('Unable to sign you up! Error: <br><br>' + error.message, function () {
 	     				$('input', context.target).val('');
 	     			});
