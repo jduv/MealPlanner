@@ -4,6 +4,7 @@
 	var ingredientController;
 	var recipeController;
 	var ingredientListController;
+	var recipeListController;
 
 	// Hooks for doc.ready
 	$(document).ready(function () {
@@ -45,6 +46,13 @@
 	}
 
 	var app = $.sammy('#app', function () {
+		// cache some often accessed elements that never change.
+		var navbar = $('#navbar');
+		var recipesNavBtn = $('#nav-recipes');
+		var ingredientsNavBtn = $('#nav-ingredients');
+		var plannerNavBtn = $('nav-planner');
+		var backBtn = $('#btn-back');
+		var addItemBtn = $('#add-item-btn');
 
 		// Make transitions purdy.
 		this.swap = function (content, callback) {
@@ -69,30 +77,29 @@
 
 		// Login screen.
 		this.get('#signin', function (context) {
-			$('#navbar').hide();
+			navbar.hide();
 			context.app.swap(ich.signinView());
 		})
 
 		this.get('#signup', function(context) {
-			$('#navbar').hide();
+			navbar.hide();
 			context.app.swap(ich.signupView());
 		})
 
 		// Home screen. Default to recipe view with some tweaks.
 		this.get('#boot', function (context) {
-			$('#nav-recipes').addClass('active');
-			$('#navbar').show();
+			recipesNavBtn.addClass('active');
 			loadRecipesView(context);
-			$('#navbar').fadeIn(fadeTime);
-			$('#add-item-btn').prop('href', '#newRecipeView').fadeIn(fadeTime);
+			navbar.fadeIn(fadeTime);
+			addItemBtn.prop('href', '#newRecipeView').fadeIn(fadeTime);
 		})
 
 		// Recipe view.
 	     this.get('#recipesView', function (context) {
-	    	$('#nav-recipes').addClass('active');
+	    	recipesNavBtn.addClass('active');
 	     	loadRecipesView(context);
-	     	$('#add-item-btn').prop('href', '#newRecipeView').fadeIn(fadeTime);
-	     	$('#btn-back').fadeOut(fadeTime);	
+	     	addItemBtn.prop('href', '#newRecipeView').fadeIn(fadeTime);
+	     	backBtn.fadeOut(fadeTime);	
 	     })
 
 	     // Ingredients view.
@@ -102,17 +109,17 @@
 	     		context.app.swap(view);
 	     	})
 
-	     	$('#nav-ingredients').addClass('active');
-	     	$('#add-item-btn').prop('href', '#newIngredientView').fadeIn(fadeTime);
-	     	$('#btn-back').fadeOut('fast');	
+	     	ingredientsNavBtn.addClass('active');
+	     	addItemBtn.prop('href', '#newIngredientView').fadeIn(fadeTime);
+	     	backBtn.fadeOut('fast');	
 	     })
 
 	     // Planner view
 	     this.get('#plannerView', function (context) {
 	     	context.app.swap(ich.plannerView());
-	     	$('#nav-planner').addClass('active');
-	     	$('#add-item-btn').fadeOut('fast');
-	     	$('#btn-back').fadeOut('fast');		     	
+	     	plannerNavBtn.addClass('active');
+	     	addItemBtn.fadeOut('fast');
+	     	backBtn.fadeOut('fast');		     	
 	     })
 
 	     // New recipe view
@@ -122,9 +129,9 @@
 	     		context.app.swap(view);
 	     	});
 
-	     	$('.nav li').removeClass('active');
-	     	$('#add-item-btn').fadeOut('fast');
-	     	$('#btn-back').prop('href', '#recipesView').fadeIn(fadeTime);
+	     	$('li', navbar).removeClass('active');
+	     	addItemBtn.fadeOut('fast');
+	     	backBtn.prop('href', '#recipesView').fadeIn(fadeTime);
 	     })
 
 	     // New ingredient view
@@ -134,9 +141,9 @@
 				context.app.swap(view);
 			});
 
-	     	$('.nav li').removeClass('active');
-	     	$('#add-item-btn').fadeOut('fast');
-	     	$('#btn-back').prop('href', '#ingredientsView').fadeIn(fadeTime);
+	     	$('li', navbar).removeClass('active');
+	     	addItemBtn.fadeOut('fast');
+	     	backBtn.prop('href', '#ingredientsView').fadeIn(fadeTime);
 	     })
 
 	     this.post('#saveRecipe', function (context) {
@@ -147,9 +154,11 @@
 	     			context.redirect('#recipesView');
 	     		})
 	     	} else {
-	     		ui.showModalError("A fatal error occurred! Unable to continue. Error: No controller available.");
-	     		// Try to fix it by routing the user to a place where the appropriate controller is created.
-	     		context.redirect('#recipesView');
+	     		ui.showModalError("A fatal error occurred! Unable to continue. Error: No controller available.", 
+		     		function() {
+		     			// Try to fix it by routing the user to a place where the appropriate controller is created.
+		     			context.redirect('#recipesView');
+		     		});
 	     	}
 
      		console.log(JSON.stringify(formData));
@@ -159,13 +168,14 @@
 	     	var formData = $(context.target).toObject();
 	     	if(ingredientController) {
 	     		ingredientController.saveIngredient(formData.ingredient, function () {
-	     			console.log('Successfully saved object: ' + JSON.stringify(formData));
 	     			context.redirect('#ingredientsView');
 	     		});
 	     	} else {
-	     		ui.showModalError("A fatal error occurred! Unable to continue. Error: No controller available.");
-	     		// Try to fix it by routing the user to a place where the appropriate controller is created.
-	     		context.redirect('#ingredientsView');
+	     		ui.showModalError("A fatal error occurred! Unable to continue. Error: No controller available.",
+	     			function () {
+	     				// Try to fix it by routing the user to a place where the appropriate controller is created.
+	     				context.redirect('#ingredientsView');
+	     			});
 	     	}
 	     })
 
@@ -181,9 +191,10 @@
 	     		},
 	     		error: function(user, error) {
 	     			loginBtn.html('<i class="icon-signin"></i> Sign in');
-	     			ui.showModalError('Unable to sign in! Error: <br><br>' + error.message, function () {
-	     				$('#password', context.target).val('');
-	     			})
+	     			ui.showModalError('Unable to sign in! Error: <br><br>' + error.message, 
+		     			function () {
+		     				$('#password', context.target).val('');
+		     			})
 	     		}
 	     	});
 	     })
@@ -201,15 +212,17 @@
 
 	     	user.signUp(null, {
 	     		success: function (user) {
-	     			ui.showModalSuccess("Account successfully created! Now go sign in!", function () {
-	     				context.redirect('#signin');
-	     			});
+	     			ui.showModalSuccess("Account successfully created! Now go sign in!", 
+		     			function () {
+		     				context.redirect('#signin');
+		     			});
 	     		},
 	     		error: function (user, error)  {
 	     			signupBtn.html('<i class="icon-heart"></i> Sign up!');
-	     			ui.showModalError('Unable to sign you up! Error: <br><br>' + error.message, function () {
-	     				$('input', context.target).val('');
-	     			});
+	     			ui.showModalError('Unable to sign you up! Error: <br><br>' + error.message, 
+		     			function () {
+		     				$('input', context.target).val('');
+		     			});
 	     		}
 	     	})
 	     })
