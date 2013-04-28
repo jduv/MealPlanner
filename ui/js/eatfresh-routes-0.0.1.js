@@ -177,9 +177,24 @@
 	     });
 
 	     this.post('#signup', function(context) {
-	     	console.log('Handle signup here.');
-	     	context.app.swap(''); // clear screen.
-	     	this.redirect('#signin');
+	     	var formData = $(context.target).toObject();
+	     	var user = new Parse.User();
+	     	user.set('username', formData.email);
+	     	user.set('password', formData.password);
+	     	user.set('email', formData.email);
+
+	     	user.signUp(null, {
+	     		success: function (user) {
+	     			ui.showModalSuccess("Account successfully created! Now go sign in!", function () {
+	     				context.redirect('#signin');
+	     			});
+	     		},
+	     		error: function (user, error)  {
+	     			ui.showModalError('Unable to sign you up! Error: <br><br>' + error.message, function () {
+	     				$('input', context.target).val('');
+	     			});
+	     		}
+	     	})
 	     })
 	 });
 })();

@@ -8,8 +8,8 @@
 			<form class="vertical-form" action="#checklogin" method="post">
 			  <div class="control-group">
 			    <div class="controls">
-			      <input type="email" id="email" placeholder="Email" data-role="none" required>
-			      <input type="password" id="password" placeholder="Password" data-role="none" required>
+			      <input type="email" name="email" placeholder="Email" data-role="none" required>
+			      <input type="password" name="password" placeholder="Password" data-role="none" required>
 			    </div>
 			      <label class="checkbox">
 			        <input type="checkbox"> Remember me
@@ -33,8 +33,8 @@
 			<form class="vertical-form" action="#signup" method="post">
 				<div class="control-group">
 				    <div class="controls">
-				      <input type="email" id="email" placeholder="Email" data-role="none" required>
-				      <input type="password" id="password" placeholder="Password" data-role="none" required>
+				      <input type="email" name="email" placeholder="Email" data-role="none" required>
+				      <input type="password" name="password" placeholder="Password" data-role="none" required>
 				      <button type="submit" class="btn btn-block btn-large btn-gradient-red">
 				      	<i class="icon-heart"></i> Sign up!</button>
 				    </div>
@@ -105,7 +105,7 @@
 					</div>
 				</section>
 				<section class="inline-form-content span10">
-					<input name="recipe.name" class="input-xlarge" type="text" placeholder="Name" data-role="none"/>
+					<input name="recipe.name" class="input-xlarge" type="text" placeholder="Name" data-role="none" required/>
 					<br>
 					<div class="serving-size-container">
 						<select name="recipe.servingSize">

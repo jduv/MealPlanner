@@ -21,11 +21,16 @@ var ui = (function () {
 	}
 
 	return {
-		showModalError : function (body)
+		showModalError : function (body, onHide)
 		{
 			var modal = $('#error-modal');
 			$('#error-modal-msg', modal).html(body);
 			modal.modal('show');
+
+			if(onHide) {
+				modal.unbind('hidden').on('hidden', onHide);
+			}
+
 			return modal;
 		},
 		showModalLoading : function () {
@@ -38,10 +43,15 @@ var ui = (function () {
 			// modal.modal('hide');
 			// return modal;
 		},
-		showModalSuccess : function (body) {
-			var modal = $("success-modal");
+		showModalSuccess : function (body, onHide) {
+			var modal = $("#success-modal");
 			$('#success-modal-msg', modal).html(body);
 			modal.modal('show');
+
+			if(onHide) {
+				modal.unbind('hidden').on('hidden', onHide);
+			}
+
 			return modal;
 		},
 		checkboxify : function (args) {			
