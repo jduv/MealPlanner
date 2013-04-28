@@ -1,3 +1,51 @@
+<!-- Login screen -->
+<script id="signinView" type="text/html">
+	<div class="center-screen-container">
+		<div class="center-screen-container-hdr text-center">
+			<h4> Sign in or sign up! </h4>
+		</div>
+		<div class="center-screen-container-content">
+			<form class="vertical-form" action="#checklogin" method="post">
+			  <div class="control-group">
+			    <div class="controls">
+			      <input type="email" id="email" placeholder="Email" data-role="none" required>
+			      <input type="password" id="password" placeholder="Password" data-role="none" required>
+			    </div>
+			      <label class="checkbox">
+			        <input type="checkbox"> Remember me
+			      </label>
+			      <button type="submit" class="btn btn-block btn-large btn-gradient-red">
+			      	<i class="icon-signin"></i> Sign in</button>
+			  </div>
+			  <a class="btn btn-block btn-large btn-success" href="#signup" data-role="none">
+				<i class="icon-heart"></i> Sign up</a>
+			</form>
+		</div>
+	</div>
+</script>
+
+<script id="signupView" type="text/html">
+	<div class="center-screen-container">
+		<div class="center-screen-container-hdr text-center">
+			<h4>Sign up for a new account:</h4>
+		</div>
+		<div class="center-screen-container-content">
+			<form class="vertical-form" action="#signup" method="post">
+				<div class="control-group">
+				    <div class="controls">
+				      <input type="email" id="email" placeholder="Email" data-role="none" required>
+				      <input type="password" id="password" placeholder="Password" data-role="none" required>
+				      <button type="submit" class="btn btn-block btn-large btn-gradient-red">
+				      	<i class="icon-heart"></i> Sign up!</button>
+				    </div>
+			  	</div>
+			  	<a class="btn btn-block btn-large btn-success" href="#signin" data-role="none">
+				<i class="icon-arrow-left"></i> Go back</a>
+			</form>
+		</div>
+	</div>
+</script>
+
 <!-- Planner screen -->
 <script id="plannerView" type="text/html">
 	<h2>Broken :(</h2>
@@ -74,14 +122,14 @@
 			</div>
 			<section>
 				<legend class="sub-legend">Ingredients</legend>
-				<ul id="recipe-ingredient-list" class="unstyled">
+				<ul id="recipe-ingredient-list" data-role="listview" class="unstyled">
 				</ul>
 				<a id="addIngredientToRecipe" class="btn btn-success btn-block btn-large" data-role="none">
 					<i class="icon-plus-sign"></i> Add Another Ingredient</a>
 			</section>
 			<legend class="sub-legend">Directions</legend>
 			<textarea name="recipe.directions" class="directions-textarea" rows="4" placeholder="Enter directions here" data-role="none"></textarea>
-			<button class="btn btn-block btn-large btn-save" type="submit">
+			<button class="btn btn-block btn-large btn-gradient-red" type="submit">
 			<i class="icon-upload-alt"></i> Save</button>
 		</fieldset>
 	</form>
@@ -96,7 +144,7 @@
 			<input id="ingredient-id-{{id}}" name="ingredients[{{id}}].id" type="hidden" />
 		</span>
 		<span>
-			<div class="input-large inline-jqm-list">
+			<div class="input-medium inline-jqm-list">
 				<select id="ingredient-measurements-{{id}}" name="ingredients[{{id}}].measurement" disabled>
 					<option disabled value="default">Measurement</option>
 				</select>
@@ -150,7 +198,7 @@
 				<ul id="conversions-list" class="unstyled well" style="display: none;">
 				</ul>
 			<br>
-			<button class="btn btn-block btn-large btn-save" type="submit">
+			<button class="btn btn-block btn-large btn-gradient-red" type="submit">
 				<i class="icon-upload-alt"></i> Save</button>
 		</fieldset>
 	</form>
@@ -161,14 +209,14 @@
 		<h4>Convert {{convertFrom}} to {{convertTo}}:</h4>
 		<div class="conversion-container">
 			<input name="ingredient.conversions[{{id}}].convertFromAmount" class="input-small" type="number" data-role="none"/>
-			<div class="inline-jqm-list input-large">
+			<div class="inline-jqm-list">
 				<select id="fromUnits" name="ingredient.conversions[{{id}}].convertFromUnits">
 					<option disabled selected value="default">Select</option>
 				</select>
 			</div>
 			<span><i class="icon-exchange icon-2x"></i></span>
 			<input name="ingredient.conversions[{{id}}].convertToAmount" class="input-small" type="number" data-role="none" />
-			<div class="inline-jqm-list input-large">
+			<div class="inline-jqm-list">
 				<select id="toUnits" name="ingredient.conversions[{{id}}].convertToUnits">
 					<option disabled selected value="default">Select</option>
 				</select>

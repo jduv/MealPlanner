@@ -18,7 +18,7 @@
 			<!-- The display:none here is required to keep the btn hidden on boot. -->
 			<div class="btn-header-container-left"><a id="btn-back" class="btn btn-header" style="display:none" href="#" data-role="none">
 				<i class="icon-circle-arrow-left"> Back</i></a></div>
-			<div class="btn-header-container-right"><a id="add-recipe-btn" class="btn btn-header" href="#" data-role="none">
+			<div class="btn-header-container-right"><a id="add-item-btn" class="btn btn-header" style="display:none" href="#" data-role="none">
 				<i class="icon-plus icon-2x"></i></a></div>
 		</section>
 
@@ -27,11 +27,12 @@
 		</section>
 
 		<!-- Nav bar -->
-		<section class="navbar navbar-fixed-bottom">
+		<section id="navbar" class="navbar navbar-fixed-bottom" style="display: none">
 			<div class="navbar-inner">
 				<ul class="nav">
 					<li id="nav-recipes">
-						<a href="#recipesView" data-role="none"><i class="icon-briefcase icon-2x pull-left"></i> <span>Recipe box</span></a></li>
+						<a href="#recipesView" data-role="none"><i class="icon-briefcase icon-2x pull-left">
+							</i> <span>Recipe box</span></a></li>
 					<li id="nav-ingredients">
 						<a href="#ingredientsView" data-role="none"><i class="icon-shopping-cart icon-2x pull-left"></i> <span>Ingredients</a></li>
 					<li id="nav-planner">

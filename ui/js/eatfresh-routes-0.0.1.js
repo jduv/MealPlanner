@@ -1,6 +1,6 @@
 // Main application execution. Sets up routes and handles page swapping.
 (function () {
-	var fadeInTime = 500;
+	var fadeTime = 500;
 	var ingredientController;
 	var recipeController;
 	var ingredientListController;
@@ -23,7 +23,7 @@
 
 		// Run the application only if tempaltes are loaded. This method calls
 		// the loadTemplates only once instead of befor each route.
-		loadTemplates(function () { app.run('#boot') });
+		loadTemplates(function () { app.run('#signin') });
 	});
 
 	// Loads templates; only once.
@@ -53,7 +53,7 @@
        		context.$element().html(content);
        		context.$element().trigger('create');
 
-       		context.$element().fadeIn(fadeInTime, function () {
+       		context.$element().fadeIn(fadeTime, function () {
 	       		if (callback) {
 	       			callback.apply();
 	       		}
@@ -67,19 +67,32 @@
 	     	})
 		}
 
-		// Home screen. Default to recipe view with some tweaks
+		// Login screen.
+		this.get('#signin', function (context) {
+			$('#navbar').hide();
+			context.app.swap(ich.signinView());
+		});
+
+		this.get('#signup', function(context) {
+			$('#navbar').hide();
+			context.app.swap(ich.signupView());
+		})
+
+		// Home screen. Default to recipe view with some tweaks.
 		this.get('#boot', function (context) {
-			loadRecipesView(context);
 			$('#nav-recipes').addClass('active');
-			$('#add-recipe-btn').prop('href', '#newRecipeView').fadeIn(fadeInTime);
+			$('#navbar').show();
+			loadRecipesView(context);
+			$('#navbar').fadeIn(fadeTime);
+			$('#add-item-btn').prop('href', '#newRecipeView').fadeIn(fadeTime);
 		});
 
 		// Recipe view.
 	     this.get('#recipesView', function (context) {
+	    	$('#nav-recipes').addClass('active');
 	     	loadRecipesView(context);
-	     	$('#nav-recipes').addClass('active');
-	     	$('#add-recipe-btn').prop('href', '#newRecipeView').fadeIn(fadeInTime);
-	     	$('#btn-back').fadeOut('fast');	
+	     	$('#add-item-btn').prop('href', '#newRecipeView').fadeIn(fadeTime);
+	     	$('#btn-back').fadeOut(fadeTime);	
 	     });
 
 	     // Ingredients view.
@@ -90,7 +103,7 @@
 	     	})
 
 	     	$('#nav-ingredients').addClass('active');
-	     	$('#add-recipe-btn').prop('href', '#newIngredientView').fadeIn(fadeInTime);
+	     	$('#add-item-btn').prop('href', '#newIngredientView').fadeIn(fadeTime);
 	     	$('#btn-back').fadeOut('fast');	
 	     });
 
@@ -98,7 +111,7 @@
 	     this.get('#plannerView', function (context) {
 	     	context.app.swap(ich.plannerView());
 	     	$('#nav-planner').addClass('active');
-	     	$('#add-recipe-btn').fadeOut('fast');
+	     	$('#add-item-btn').fadeOut('fast');
 	     	$('#btn-back').fadeOut('fast');		     	
 	     })
 
@@ -110,8 +123,8 @@
 	     	});
 
 	     	$('.nav li').removeClass('active');
-	     	$('#add-recipe-btn').fadeOut('fast');
-	     	$('#btn-back').prop('href', '#recipesView').fadeIn(fadeInTime);
+	     	$('#add-item-btn').fadeOut('fast');
+	     	$('#btn-back').prop('href', '#recipesView').fadeIn(fadeTime);
 	     });
 
 	     // New ingredient view
@@ -122,8 +135,8 @@
 			});
 
 	     	$('.nav li').removeClass('active');
-	     	$('#add-recipe-btn').fadeOut('fast');
-	     	$('#btn-back').prop('href', '#ingredientsView').fadeIn(fadeInTime);
+	     	$('#add-item-btn').fadeOut('fast');
+	     	$('#btn-back').prop('href', '#ingredientsView').fadeIn(fadeTime);
 	     });
 
 	     this.post('#saveRecipe', function (context) {
@@ -155,5 +168,18 @@
 	     		context.redirect('#ingredientsView');
 	     	}
 	     });
+
+	     this.post('#checklogin', function(context) {
+	     	console.log('Inside check login');
+	     	// Check login here.
+	     	context.app.swap(''); // clear screen.
+	     	this.redirect('#boot');
+	     });
+
+	     this.post('#signup', function(context) {
+	     	console.log('Handle signup here.');
+	     	context.app.swap(''); // clear screen.
+	     	this.redirect('#signin');
+	     })
 	 });
 })();
