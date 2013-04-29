@@ -306,9 +306,12 @@ ul.nav li a span {
 
 #recipe-ingredient-list {
 	margin-top: -20px;
-	margin-bottom: 10px;
+	margin-bottom: 20px;
+	border-radius: 5px;
 }
 
-#recipe-ingredient-list li{
+#recipe-ingredient-list li {
 	padding-top: 20px;
+	border-right: 1px solid #ccc;
+	border-left: 1px solid #ccc;
 }

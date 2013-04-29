@@ -192,56 +192,60 @@ var eatfresh = (function () {
 				      return beginswith.concat(caseSensitive, caseInsensitive)
 					},
 					updater : function(item) { 
-						var ingredientId = $('#ingredient-id-' + counter, view);
-						var measurementSelect = $('#ingredient-measurements-' + counter, view);
-						var id = item.attr('id');
-						var ingredient = _.find(ingredients, { 'id' : id });
-						var supportedMeasurementTypes = _.map(ingredient.get('supportedMeasurementTypes'), function(item) {
-							return measurementTypes[item];
-						});
+						var ingredientIdField = $('#ingredient-id-' + id, view);
+						var measurementSelect = $('#ingredient-measurements-' + id, view);
+						var ingredientId = item.attr('id');
+						var ingredient = _.find(ingredients, { 'id' : ingredientId });
 
-						// set id.
-						ingredientId.val(ingredient.id);
+						if(ingredient) {
+							var supportedMeasurementTypes = _.map(ingredient.get('supportedMeasurementTypes'), function(item) {
+								return measurementTypes[item];
+							});
 
-						// build measurements list.
-						var list = ui.optionify({
-							items : supportedMeasurementTypes,
-							valueSelector : measurementTypeValueSelector,
-							textSelector : measurementTypeTextSelector
-						});
+							// set id field.
+							ingredientIdField.val(ingredient.id);
 
-						var defaultOption = $('option', measurementSelect);
-						measurementSelect.html('');
-						measurementSelect.append(defaultOption);
-						measurementSelect.append(list);
+							// build measurements list.
+							var list = ui.optionify({
+								items : supportedMeasurementTypes,
+								valueSelector : measurementTypeValueSelector,
+								textSelector : measurementTypeTextSelector
+							});
 
-						// bind to change event
-						measurementSelect.change(function () {
-							var selectedOption = $(':selected', measurementSelect);
-							var unitTypesSelect = $('#ingredient-units-' + counter);
-							$('#ingredient-amount-' + counter).removeAttr('disabled');
+							var defaultOption = $('option', measurementSelect);
+							measurementSelect.html('');
+							measurementSelect.append(defaultOption);
+							measurementSelect.append(list);
 
-							// populate 
-							var measurementType = measurementTypes[selectedOption.val()];
-							if(measurementType) {
-								var list = ui.optionify({
-									items : measurementType.unitTypes,
-									valueSelector : unitTypeValueSelector,
-									textSelector : unitTypeTextSelector
-								});
+							// bind to change event
+							measurementSelect.change(function () {
+								var selectedOption = $(':selected', measurementSelect);
+								var unitTypesSelect = $('#ingredient-units-' + id);
+								$('#ingredient-amount-' + id).removeAttr('disabled');
 
-								var defaultOption = $('option[value="default"]', unitTypesSelect);
-								unitTypesSelect.html('');
-								unitTypesSelect.append(defaultOption);
-								unitTypesSelect.append(list);
-								unitTypesSelect.selectmenu('enable');
-								unitTypesSelect.selectmenu('refresh');
-							}
-						});
+								// populate 
+								var measurementType = measurementTypes[selectedOption.val()];
+								if(measurementType) {
+									var list = ui.optionify({
+										items : measurementType.unitTypes,
+										valueSelector : unitTypeValueSelector,
+										textSelector : unitTypeTextSelector
+									});
 
-						// tell jquery mobile to refresh itself.
-						measurementSelect.selectmenu('enable');
-						measurementSelect.selectmenu('refresh');
+									var defaultOption = $('option[value="default"]', unitTypesSelect);
+									unitTypesSelect.html('');
+									unitTypesSelect.append(defaultOption);
+									unitTypesSelect.append(list);
+									unitTypesSelect.selectmenu('enable');
+									unitTypesSelect.selectmenu('refresh');
+								}
+							});
+
+							// tell jquery mobile to refresh itself.
+							measurementSelect.selectmenu('enable');
+							measurementSelect.selectmenu('refresh');
+						}
+
 						return item.attr('data-value'); 
 					},
 					highlighter : function(item) {
@@ -263,21 +267,23 @@ var eatfresh = (function () {
 			// Wires swipe delete.
 			var wireSwipeDelete = function (id, ingredientListItem, list) {
 				// handle deleting the first time.
-
 				ingredientListItem.on('swiperight', function() {
 					var deleteButton = $('#delete-ingredient-' + id, ingredientListItem);
-					deleteButton.click(function () {
-						ingredientListItem.slideUp('fast', function() { 
-							ingredientListItem.remove();
+					
+					if($('li', list).length > 1) {
+						deleteButton.click(function () {
+							ingredientListItem.slideToggle('fast', function() { 
+								ingredientListItem.remove();
+								list.listview('refresh');
+							});
 						});
-						list.listview('refresh');
-					})
 
-					deleteButton.slideDown();
-					ingredientListItem.click(function() {
-						deleteButton.hide();
-						ingredientListItem.unbind('click')
-					})
+						deleteButton.slideToggle('fast');
+						ingredientListItem.click(function() {
+							deleteButton.slideToggle('fast');
+							ingredientListItem.unbind('click')
+						});
+					}
 				});
 			}
 

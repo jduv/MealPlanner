@@ -147,7 +147,8 @@
 					<option disabled value="default">Measurement</option>
 				</select>
 			</div>
-			<input id="ingredient-amount-{{id}}" name="ingredients[{{id}}].amount" class="input-small" type="number" min="0" placeholder="Amount" data-role="none" disabled/>
+			<input id="ingredient-amount-{{id}}" name="ingredients[{{id}}].amount" class="input-small" 
+				type="number" min="0" step="any" placeholder="Amount" data-role="none" disabled/>
 			<div class="input-medium inline-jqm-list">
 				<select id="ingredient-units-{{id}}" name="ingredients[{{id}}].units" disabled>
 					<option disabled value="default">Units</option>
@@ -172,7 +173,7 @@
 					</div>
 				</section>
 				<section class="inline-form-content span10">
-					<input name="ingredient.name" class="input-xlarge" type="text" placeholder="Name" data-role="none"/>
+					<input name="ingredient.name" class="input-xlarge" type="text" placeholder="Name" data-role="none" required/>
 					<br>
 					<input name="ingredient.brand" class="input-xlarge" type="text" placeholder="Store brand" data-role="none"/>
 					<span class="help-inline form-optional"><em>Optional</em></span>
@@ -210,14 +211,14 @@
 	<li>
 		<h4>Convert {{convertFrom}} to {{convertTo}}:</h4>
 		<div class="conversion-container">
-			<input name="ingredient.conversions[{{id}}].convertFromAmount" class="input-small" type="number" data-role="none"/>
+			<input name="ingredient.conversions[{{id}}].convertFromAmount" class="input-small" min="0" step="any" type="number" data-role="none" required/>
 			<div class="inline-jqm-list">
 				<select id="fromUnits" name="ingredient.conversions[{{id}}].convertFromUnits">
 					<option disabled selected value="default">Select</option>
 				</select>
 			</div>
 			<span><i class="icon-exchange icon-2x"></i></span>
-			<input name="ingredient.conversions[{{id}}].convertToAmount" class="input-small" type="number" data-role="none" />
+			<input name="ingredient.conversions[{{id}}].convertToAmount" class="input-small" min="0" step="any" type="number" data-role="none" required/>
 			<div class="inline-jqm-list">
 				<select id="toUnits" name="ingredient.conversions[{{id}}].convertToUnits">
 					<option disabled selected value="default">Select</option>
