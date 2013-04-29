@@ -160,9 +160,9 @@ var eatfresh = (function () {
 			var measurementTypes;
 
 			// configure the type-ahead
-			var wireAutoComplete = function (counter)
+			var wireAutoComplete = function (id)
 			{
-				$('#ingredient-autocomplete-' + ingredientCount, view)
+				$('#ingredient-autocomplete-' + id, view)
 				.typeahead({ 
 					source : function (query, process) { return ingredients; },
 					matcher : function(item) { 
@@ -260,18 +260,49 @@ var eatfresh = (function () {
 				});
 			}
 
+			// Wires swipe delete.
+			var wireSwipeDelete = function (id, ingredientListItem, list) {
+				// handle deleting the first time.
+
+				ingredientListItem.on('swiperight', function() {
+					var deleteButton = $('#delete-ingredient-' + id, ingredientListItem);
+					deleteButton.click(function () {
+						ingredientListItem.slideUp('fast', function() { 
+							ingredientListItem.remove();
+						});
+						list.listview('refresh');
+					})
+
+					deleteButton.slideDown();
+					ingredientListItem.click(function() {
+						deleteButton.hide();
+						ingredientListItem.unbind('click')
+					})
+				});
+			}
+
 			var controller = {
 				addIngredientToView : function () {
+					var list = $('#recipe-ingredient-list', view);
 					var ingredient = ich.newIngredient({ id : ingredientCount });
-					$('#recipe-ingredient-list', view).append(ingredient).trigger('create');
+					ingredient.hide();
+					list.append(ingredient);
 
+					// Wire auto-complete box
 					wireAutoComplete(ingredientCount);
+
+					// Wire swipe-delete
+					wireSwipeDelete(ingredientCount, ingredient, list);
 
 					// If we're not adding the first ingredient...
 					if(ingredientCount > 0) {
-						ingredient.hide();
+						list.listview('refresh').trigger('create');
 						ingredient.slideDown('fast');
+						list.listview('refresh');
+					} else {
+						ingredient.show();
 					}
+					
 					ingredientCount++;
 				},
 				saveRecipe : function (jsonFormData, callback) {
@@ -357,8 +388,8 @@ var eatfresh = (function () {
 				var checked = $('input:checked', measurementTypesElement);
 				var viewGenerator = createConversionViewGenerator();
 
-				// A peculiar way of handling this problem, but it's readable. The case statements represent
-				// the number of checkboxes checked, and we'll build out the view based on that.
+				// A peculiar way of handling this problem, but it's reasonable. The case statements 
+				// represent the number of checkboxes checked, and we'll build out the view based on that.
 				switch(checked.length) {
 					// two checkboxes checked, create a conversion from A to B.
 					case 2:
@@ -367,7 +398,7 @@ var eatfresh = (function () {
 						var view = viewGenerator.generateConversionView(convertFrom, convertTo);
 
 						if(view) {
-							conversionsList.html(view).trigger('create'); // force jqm to re-parse th element
+							conversionsList.html(view).trigger('create'); // force jqm to re-parse the element
 							conversionsList.show();
 						}
 

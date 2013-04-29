@@ -41,7 +41,8 @@
 					callback();
 				})
 			.fail(function (request, status, error) {
-				ui.showModalError('We encountered a problem when loading site templates! Error: <br><br>' + error);
+				ui.showModalError(
+					'We encountered a problem when loading site templates! Error: <br><br>' + error);
 			});
 	}
 
@@ -154,9 +155,9 @@
 	     			context.redirect('#recipesView');
 	     		})
 	     	} else {
-	     		ui.showModalError("A fatal error occurred! Unable to continue. Error: No controller available.", 
+	     		ui.showModalError(
+	     			"A fatal error occurred! Unable to continue. Error: No controller available.", 
 		     		function() {
-		     			// Try to fix it by routing the user to a place where the appropriate controller is created.
 		     			context.redirect('#recipesView');
 		     		});
 	     	}
@@ -171,9 +172,9 @@
 	     			context.redirect('#ingredientsView');
 	     		});
 	     	} else {
-	     		ui.showModalError("A fatal error occurred! Unable to continue. Error: No controller available.",
+	     		ui.showModalError(
+	     			"A fatal error occurred! Unable to continue. Error: No controller available.",
 	     			function () {
-	     				// Try to fix it by routing the user to a place where the appropriate controller is created.
 	     				context.redirect('#ingredientsView');
 	     			});
 	     	}
