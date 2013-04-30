@@ -312,14 +312,20 @@ var eatfresh = (function () {
 					ingredientCount++;
 				},
 				saveRecipe : function (jsonFormData, callback) {
-					var recipe = new Recipe();
-					recipe.set('name', jsonFormData.name);
-					recipe.set('servingSize', jsonFormData.servingSize);
-					recipe.set('directions', jsonFormData.directions);
-					recipe.save(null, {
-						success : callback,
-						error : function(error) { ui.showModalError('Unable to save the recipe. Error: ' + error.message) }
-					});
+					var currentUser = Parse.User.current();
+					if(currentUser) {
+						var recipe = new Recipe();
+						recipe.set('name', jsonFormData.name);
+						recipe.set('servingSize', jsonFormData.servingSize);
+						recipe.set('directions', jsonFormData.directions);
+						recipe.set('owner', currentUser);
+						recipe.save(null, {
+							success : callback,
+							error : function(error) { ui.showModalError('Unable to save the recipe. Error: ' + error.message) }
+						});
+					} else {
+						// TODO: throw exception here
+					}
 				},
 				// match the other load-view calls, even though the callback is unused.
 				loadView : function (callback) {
@@ -565,23 +571,28 @@ var eatfresh = (function () {
 
 			return {
 				loadView : function (callback) {
-					var Recipe = Parse.Object.extend('Recipe');
-					var query = new Parse.Query(Recipe);
-					query.ascending('name');
-					query.find({
-						success : function (data) {
-							for(var i = 0; i < data.length; i++) {
-								var recipe = ich.recipeListItem({
-									name : data[i].get('name'),
-									servingSize : data[i].get('servingSize')
-								});
-								recipeList.append(recipe);
-							}
+					var currentUser = Parse.User.current();
+					if(currentUser) {
+						var query = new Parse.Query(Recipe);
+						query.equalTo('owner', currentUser);
+						query.ascending('name');
+						query.find({
+							success : function (data) {
+								for(var i = 0; i < data.length; i++) {
+									var recipe = ich.recipeListItem({
+										name : data[i].get('name'),
+										servingSize : data[i].get('servingSize')
+									});
+									recipeList.append(recipe);
+								}
 
-							callback(view);
-						},
-						error : function (error) { ui.showModalError('Unable to fetch the recipe list. Error: ' + error.message) }
-					});
+								callback(view);
+							},
+							error : function (error) { ui.showModalError('Unable to fetch the recipe list. Error: ' + error.message) }
+						});
+					} else {
+						// TODO: Throw exception.
+					}
 				}
 			};
 
